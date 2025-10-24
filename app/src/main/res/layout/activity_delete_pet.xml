@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/deletePet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_green"
+    tools:context=".DeletePetActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:text="Excluir pet"
+        android:textColor="#5ac0af"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/delete_text_name"
+        android:layout_width="353dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edittext_bg"
+        android:ems="10"
+        android:hint="Nome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+    <TextView
+        android:id="@+id/delete_text_race"
+        android:layout_width="353dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edittext_bg"
+        android:ems="10"
+        android:hint="Raça"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delete_text_name" />
+    <TextView
+        android:id="@+id/delete_text_color"
+        android:layout_width="353dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edittext_bg"
+        android:ems="10"
+        android:hint="Cor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delete_text_race" />
+    <TextView
+        android:id="@+id/delete_text_born"
+        android:layout_width="353dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edittext_bg"
+        android:ems="10"
+        android:hint="Data de nascimento"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delete_text_color" />
+
+    <Button
+        android:id="@+id/buttonConfirmDelete"
+        android:layout_width="251dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="#F80330"
+        android:text="Excluir"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delete_text_born" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
