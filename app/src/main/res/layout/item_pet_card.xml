@@ -1,0 +1,85 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    android:backgroundTint="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+        android:id="@+id/textPetName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nome do Pet"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="#333" />
+
+        <TextView
+        android:id="@+id/textPetType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tipo: Cachorro"
+        android:textColor="#666"
+        android:textSize="16sp" />
+
+        <TextView
+        android:id="@+id/textPetRace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Raça: Labrador"
+        android:textSize="16sp"
+        android:textColor="#666" />
+
+        <TextView
+        android:id="@+id/textPetColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cor: Marrom"
+        android:textSize="16sp"
+        android:textColor="#666" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:weightSum="2">
+
+            <ImageButton
+                android:id="@+id/buttonEditPet"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:backgroundTint="#808003"
+                android:contentDescription="Editar"
+                android:padding="8dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_edit" />
+
+            <ImageButton
+                android:id="@+id/buttonDeletePet"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#E60808"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/ic_delete"
+                android:contentDescription="Excluir"
+                android:scaleType="centerInside" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
