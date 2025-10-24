@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:weightSum="5"
+    android:background="#FFFFFF">
+
+    <ImageButton
+        android:id="@+id/buttonInicio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Início"
+        android:backgroundTint="#5ac0af"
+        android:textSize="12sp"
+        android:src="@drawable/ic_home"/>
+
+    <ImageButton
+        android:id="@+id/buttonAgendar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Agendar"
+        android:backgroundTint="#5ac0af"
+        android:textSize="12sp"
+        android:src="@drawable/ic_new_assignment"/>
+
+    <ImageButton
+        android:id="@+id/buttonPets"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Pets"
+        android:backgroundTint="#5ac0af"
+        android:textSize="12sp"
+        android:src="@drawable/ic_pets"/>
+
+    <ImageButton
+        android:id="@+id/buttonAgendamentos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Agendamentos"
+        android:backgroundTint="#5ac0af"
+        android:textSize="10sp"
+        android:src="@drawable/ic_appointments"/>
+
+    <ImageButton
+        android:id="@+id/buttonPerfil"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Perfil"
+        android:backgroundTint="#5ac0af"
+        android:textSize="12sp"
+        android:src="@drawable/ic_profile"/>
+
+</LinearLayout>
