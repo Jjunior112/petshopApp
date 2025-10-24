@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button buttonRedirectRegister, buttonLogin;
     private EditText editTextEmail, editTextPassword;
 
-    private static final String LOGIN_URL = "https://seu-servidor.com/api/auth/login";
+    private static final String LOGIN_URL = "http://10.0.2.2:8080/user/login";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                             try {
                                 // Exemplo: resposta com token JWT
                                 String token = response.getString("token");
+                                String role = response.getString("role");
                                 Toast.makeText(LoginActivity.this, "Login realizado!", Toast.LENGTH_SHORT).show();
 
                                 // Salvar o token no SharedPreferences
@@ -89,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 intent.putExtra("TOKEN", token);
+                                intent.putExtra("ROLE", role);
                                 startActivity(intent);
                                 finish();
 
