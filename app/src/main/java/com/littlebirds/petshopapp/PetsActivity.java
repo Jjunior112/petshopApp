@@ -37,6 +37,7 @@ public class PetsActivity extends AppCompatActivity {
     private PetsAdapter petsAdapter;
     private List<Pet> petList = new ArrayList<>();
 
+    private Button buttonNewPet;
     private ImageButton buttonAgendar, buttonInicio, buttonPets, buttonAgendamentos, buttonPerfil;
 
 
@@ -64,6 +65,10 @@ public class PetsActivity extends AppCompatActivity {
         buttonPets = findViewById(R.id.buttonPets);
         buttonAgendamentos = findViewById(R.id.buttonAgendamentos);
         buttonPerfil = findViewById(R.id.buttonPerfil);
+
+        buttonNewPet = findViewById(R.id.buttonNewPet);
+
+        buttonNewPet.setOnClickListener(v-> startActivity(new Intent(PetsActivity.this,NewPetActivity.class)));
 
         // 🔹 Define as ações de clique
 

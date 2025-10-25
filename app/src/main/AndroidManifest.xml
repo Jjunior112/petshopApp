@@ -27,6 +27,7 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".PetsActivity" />
+        <activity android:name=".NewPetActivity" />
         <activity android:name=".EditPetActivity" />
         <activity android:name=".DeletePetActivity" />
 
