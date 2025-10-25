@@ -3,8 +3,10 @@ package com.littlebirds.petshopapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -40,6 +42,8 @@ public class PetsActivity extends AppCompatActivity {
     private Button buttonNewPet;
     private ImageButton buttonAgendar, buttonInicio, buttonPets, buttonAgendamentos, buttonPerfil;
 
+    private TextView textViewEmpty;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,8 @@ public class PetsActivity extends AppCompatActivity {
         buttonPets = findViewById(R.id.buttonPets);
         buttonAgendamentos = findViewById(R.id.buttonAgendamentos);
         buttonPerfil = findViewById(R.id.buttonPerfil);
+        textViewEmpty=findViewById(R.id.textViewEmpty);
+
 
         buttonNewPet = findViewById(R.id.buttonNewPet);
 
@@ -105,10 +111,18 @@ public class PetsActivity extends AppCompatActivity {
                         JSONArray jsonArray = new JSONArray(response);
                         petList.clear(); // limpa lista anterior
 
+
+
                         if (jsonArray.length() == 0) {
-                            Toast.makeText(this, "Nenhum pet encontrado.", Toast.LENGTH_SHORT).show();
+                            // Nenhum pet encontrado: mostra mensagem e oculta RecyclerView
+                            textViewEmpty.setVisibility(View.VISIBLE);
+                            recyclerViewPets.setVisibility(View.GONE);
                             petsAdapter.notifyDataSetChanged();
                             return;
+                        } else {
+                            // Pets encontrados: mostra RecyclerView e oculta mensagem
+                            textViewEmpty.setVisibility(View.GONE);
+                            recyclerViewPets.setVisibility(View.VISIBLE);
                         }
 
                         for (int i = 0; i < jsonArray.length(); i++) {
