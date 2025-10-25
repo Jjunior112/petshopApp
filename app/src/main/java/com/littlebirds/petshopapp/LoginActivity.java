@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -52,6 +53,16 @@ public class LoginActivity extends AppCompatActivity {
         buttonRedirectRegister.setOnClickListener(view -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
+        });
+
+        ImageView imageGoogleLogin = findViewById(R.id.imageGoogleLogin);
+
+        imageGoogleLogin.setOnClickListener(v -> {
+            // Aqui você implementa a lógica do login com Google
+            Toast.makeText(this, "Login com Google clicado!", Toast.LENGTH_SHORT).show();
+
+            // Exemplo: iniciar fluxo de autenticação do Google Sign-In
+            // startActivity(new Intent(this, GoogleSignInActivity.class));
         });
     }
 
