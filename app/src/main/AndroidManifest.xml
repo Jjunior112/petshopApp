@@ -30,6 +30,7 @@
         <activity android:name=".NewPetActivity" />
         <activity android:name=".EditPetActivity" />
         <activity android:name=".DeletePetActivity" />
+        <activity android:name=".SchedulingActivity" />
 
 
     </application>

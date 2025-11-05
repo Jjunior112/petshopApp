@@ -48,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
 
         buttonPets.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, PetsActivity.class)));
 
-        //buttonAgendamentos.setOnClickListener(v -> startActivity(new Intent(this, AgendamentosActivity.class)));
+        buttonAgendamentos.setOnClickListener(v -> startActivity(new Intent(this, SchedulingActivity.class)));
 
         //buttonPerfil.setOnClickListener(v -> startActivity(new Intent(this, PerfilActivity.class)));
     }

@@ -87,7 +87,7 @@ public class PetsActivity extends AppCompatActivity {
 
         buttonInicio.setOnClickListener(v -> startActivity(new Intent(PetsActivity.this, HomeActivity.class)));
 
-        //buttonAgendamentos.setOnClickListener(v -> startActivity(new Intent(PetsActivity.this, AgendamentosActivity.class)));
+        buttonAgendamentos.setOnClickListener(v -> startActivity(new Intent(PetsActivity.this, SchedulingActivity.class)));
 
         //buttonPerfil.setOnClickListener(v -> startActivity(new Intent(PetsActivity.this, PerfilActivity.class)));
 
@@ -108,10 +108,12 @@ public class PetsActivity extends AppCompatActivity {
                 PETS_URL,
                 response -> {
                     try {
-                        JSONArray jsonArray = new JSONArray(response);
+                        JSONObject jsonObject = new JSONObject(response);
+                        JSONArray jsonArray = jsonObject.getJSONArray("content");
+
+                        System.out.println(response);
+
                         petList.clear(); // limpa lista anterior
-
-
 
                         if (jsonArray.length() == 0) {
                             // Nenhum pet encontrado: mostra mensagem e oculta RecyclerView

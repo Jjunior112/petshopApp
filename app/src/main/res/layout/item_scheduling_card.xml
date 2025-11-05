@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -13,39 +14,44 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Nome do Pet -->
         <TextView
             android:id="@+id/textPetName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nome do Pet"
-            android:textColor="#333"
+            android:textStyle="bold"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textColor="#333" />
 
+        <!-- Tipo de Serviço -->
         <TextView
-        android:id="@+id/textPetType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tipo: Cachorro"
-        android:textColor="#666"
-        android:textSize="16sp" />
+            android:id="@+id/textServiceType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Serviço: Banho"
+            android:textColor="#666"
+            android:textSize="16sp" />
 
+        <!-- Data -->
         <TextView
-        android:id="@+id/textPetRace"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Raça: Labrador"
-        android:textSize="16sp"
-        android:textColor="#666" />
+            android:id="@+id/textDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Data: 15/11/2025 - 14:30"
+            android:textColor="#666"
+            android:textSize="16sp" />
 
+        <!-- Status -->
         <TextView
-        android:id="@+id/textPetColor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cor: Marrom"
-        android:textSize="16sp"
-        android:textColor="#666" />
+            android:id="@+id/textStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status: Pendente"
+            android:textColor="#666"
+            android:textSize="16sp" />
 
+        <!-- Botões de ação -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,30 +62,30 @@
             android:weightSum="2">
 
             <ImageButton
-                android:id="@+id/buttonEditPet"
+                android:id="@+id/buttonEditScheduling"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
+                android:layout_marginEnd="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:backgroundTint="#808003"
-                android:contentDescription="Editar"
+                android:contentDescription="Editar Agendamento"
                 android:padding="8dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_edit" />
 
             <ImageButton
-                android:id="@+id/buttonDeletePet"
+                android:id="@+id/buttonDeleteScheduling"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:backgroundTint="#E60808"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:backgroundTint="#E60808"
+                android:contentDescription="Excluir Agendamento"
                 android:padding="8dp"
-                android:src="@drawable/ic_delete"
-                android:contentDescription="Excluir"
-                android:scaleType="centerInside" />
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_delete" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

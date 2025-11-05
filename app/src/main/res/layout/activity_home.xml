@@ -12,7 +12,7 @@
         android:id="@+id/button"
         android:layout_width="224dp"
         android:layout_height="61dp"
-        android:layout_marginTop="376dp"
+        android:layout_marginTop="404dp"
         android:backgroundTint="#5ac0af"
         android:text="Agendar serviço agora"
         app:layout_constraintEnd_toEndOf="parent"
