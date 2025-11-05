@@ -3,8 +3,6 @@ package com.littlebirds.petshopapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -50,6 +48,6 @@ public class HomeActivity extends AppCompatActivity {
 
         buttonAgendamentos.setOnClickListener(v -> startActivity(new Intent(this, SchedulingActivity.class)));
 
-        //buttonPerfil.setOnClickListener(v -> startActivity(new Intent(this, PerfilActivity.class)));
+        buttonPerfil.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
     }
 }

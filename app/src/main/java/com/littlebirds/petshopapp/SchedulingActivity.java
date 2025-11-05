@@ -73,6 +73,7 @@ public class SchedulingActivity extends AppCompatActivity {
         buttonAgendamentos.setOnClickListener(v ->
                 Toast.makeText(this, "Você já está em Agendamentos", Toast.LENGTH_SHORT).show()
         );
+        buttonPerfil.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
 
         loadSchedulings();
     }
@@ -112,6 +113,7 @@ public class SchedulingActivity extends AppCompatActivity {
                             Scheduling scheduling = new Scheduling(
                                     Long.parseLong(schJson.getString("id")),
                                     schJson.getString("petName"),
+                                    schJson.getString("workerName"),
                                     schJson.getString("serviceType"),
                                     schJson.getString("date"),
                                     schJson.optString("status", "Não informado")

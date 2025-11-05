@@ -89,7 +89,7 @@ public class PetsActivity extends AppCompatActivity {
 
         buttonAgendamentos.setOnClickListener(v -> startActivity(new Intent(PetsActivity.this, SchedulingActivity.class)));
 
-        //buttonPerfil.setOnClickListener(v -> startActivity(new Intent(PetsActivity.this, PerfilActivity.class)));
+        buttonPerfil.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
 
         loadPets();
     }

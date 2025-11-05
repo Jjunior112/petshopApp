@@ -39,6 +39,9 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
         Scheduling scheduling = schedulingList.get(position);
 
         holder.textPetName.setText( scheduling.getPetName());
+
+        holder.textWorkerName.setText("Funcionário: " + scheduling.getWorkerName());
+
         String formattedService = scheduling.getServiceType()
                 .replace("_", " ") // troca "_" por espaço
                 .toLowerCase(Locale.getDefault()); // coloca tudo em minúsculas
@@ -122,12 +125,13 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
     }
 
     public static class SchedulingViewHolder extends RecyclerView.ViewHolder {
-        TextView textPetName, textServiceType, textDate, textStatus;
+        TextView textPetName,textWorkerName, textServiceType, textDate, textStatus;
         ImageButton buttonEditScheduling, buttonDeleteScheduling;
 
         public SchedulingViewHolder(@NonNull View itemView) {
             super(itemView);
             textPetName = itemView.findViewById(R.id.textPetName);
+            textWorkerName = itemView.findViewById(R.id.textWorkerName);
             textServiceType = itemView.findViewById(R.id.textServiceType);
             textDate = itemView.findViewById(R.id.textDate);
             textStatus = itemView.findViewById(R.id.textStatus);

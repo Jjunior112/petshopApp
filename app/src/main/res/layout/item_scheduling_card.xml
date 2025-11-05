@@ -24,6 +24,15 @@
             android:textSize="20sp"
             android:textColor="#333" />
 
+        <!-- Nome do Funcionario -->
+        <TextView
+            android:id="@+id/textWorkerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nome do Funcionário"
+            android:textColor="#666"
+            android:textSize="16sp" />
+
         <!-- Tipo de Serviço -->
         <TextView
             android:id="@+id/textServiceType"
