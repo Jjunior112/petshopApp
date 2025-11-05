@@ -91,11 +91,12 @@ public class LoginActivity extends AppCompatActivity {
                                 // Exemplo: resposta com token JWT
                                 String token = response.getString("token");
                                 String role = response.getString("role");
+                                String userId = response.getString("userId");
                                 Toast.makeText(LoginActivity.this, "Login realizado!", Toast.LENGTH_SHORT).show();
 
                                 // Salvar o token no SharedPreferences
 
-                                saveToken(token);
+                                saveToken(token,userId);
 
                                 // e redirecionar o usuário:
 
@@ -126,10 +127,11 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    private void saveToken(String token) {
+    private void saveToken(String token,String userId) {
         getSharedPreferences("auth", MODE_PRIVATE)
                 .edit()
                 .putString("jwt_token", token)
+                .putString("user_id", userId)
                 .apply();
     }
 }
