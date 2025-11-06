@@ -69,7 +69,7 @@ public class SchedulingActivity extends AppCompatActivity {
         // Navegação
         buttonInicio.setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
         buttonPets.setOnClickListener(v -> startActivity(new Intent(this, PetsActivity.class)));
-        //buttonAgendar.setOnClickListener(v -> startActivity(new Intent(this, NewSchedulingActivity.class)));
+        buttonAgendar.setOnClickListener(v -> startActivity(new Intent(this, NewSchedulingActivity.class)));
         buttonAgendamentos.setOnClickListener(v ->
                 Toast.makeText(this, "Você já está em Agendamentos", Toast.LENGTH_SHORT).show()
         );

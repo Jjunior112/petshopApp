@@ -83,7 +83,7 @@ public class PetsActivity extends AppCompatActivity {
             Toast.makeText(this, "Você já está em Pets", Toast.LENGTH_SHORT).show();
         });
 
-        //buttonAgendar.setOnClickListener(v -> startActivity(new Intent(PetsActivity.this, AgendarActivity.class)));
+        buttonAgendar.setOnClickListener(v -> startActivity(new Intent(PetsActivity.this, NewSchedulingActivity.class)));
 
         buttonInicio.setOnClickListener(v -> startActivity(new Intent(PetsActivity.this, HomeActivity.class)));
 

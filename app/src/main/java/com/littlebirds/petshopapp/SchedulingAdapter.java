@@ -106,11 +106,11 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
             holder.textDate.setText("Data: inválida");
         }
 
-        //holder.buttonEditScheduling.setOnClickListener(v -> {
-        //     Intent intent = new Intent(context, EditSchedulingActivity.class);
-        //    intent.putExtra("schedulingId", scheduling.getId());
-        //     context.startActivity(intent);
-        // });
+        holder.buttonEditScheduling.setOnClickListener(v -> {
+             Intent intent = new Intent(context, EditSchedulingActivity.class);
+            intent.putExtra("schedulingId", scheduling.getId());
+             context.startActivity(intent);
+         });
 
         //holder.buttonDeleteScheduling.setOnClickListener(v -> {
         //    Intent intent = new Intent(context, DeleteSchedulingActivity.class);

@@ -65,6 +65,8 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(this, "Você já está no seu perfil", Toast.LENGTH_SHORT).show()
         );
 
+        buttonAgendar.setOnClickListener(v -> startActivity(new Intent(ProfileActivity.this, NewSchedulingActivity.class)));
+
         buttonPets.setOnClickListener(v ->
                 startActivity(new Intent(ProfileActivity.this, PetsActivity.class))
         );

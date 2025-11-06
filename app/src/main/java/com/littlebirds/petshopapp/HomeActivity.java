@@ -3,6 +3,7 @@ package com.littlebirds.petshopapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -15,6 +16,8 @@ import androidx.core.view.WindowInsetsCompat;
 public class HomeActivity extends AppCompatActivity {
 
     private ImageButton buttonInicio, buttonAgendar, buttonPets, buttonAgendamentos, buttonPerfil;
+
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class HomeActivity extends AppCompatActivity {
         buttonPets = findViewById(R.id.buttonPets);
         buttonAgendamentos = findViewById(R.id.buttonAgendamentos);
         buttonPerfil = findViewById(R.id.buttonPerfil);
+        button = findViewById(R.id.button);
 
         // 🔹 Define as ações de clique
 
@@ -42,7 +46,9 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(this, "Você já está na Home", Toast.LENGTH_SHORT).show();
         });
 
-        //buttonAgendar.setOnClickListener(v -> startActivity(new Intent(this, AgendarActivity.class)));
+        button.setOnClickListener(v -> startActivity(new Intent(this, NewSchedulingActivity.class)));
+
+        buttonAgendar.setOnClickListener(v -> startActivity(new Intent(this, NewSchedulingActivity.class)));
 
         buttonPets.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, PetsActivity.class)));
 

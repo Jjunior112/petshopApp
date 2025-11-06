@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/newScheduling"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_green"
+    tools:context=".NewSchedulingActivity">
+
+    <!-- Título -->
+
+    <!-- Seleção de Funcionário -->
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="204dp"
+        android:text="Novo Agendamento"
+        android:textColor="#5ac0af"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner_worker"
+        android:layout_width="353dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edittext_bg"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Seleção de Pet -->
+    <Spinner
+        android:id="@+id/spinner_pet"
+        android:layout_width="353dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/edittext_bg"
+        app:layout_constraintTop_toBottomOf="@id/spinner_worker"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Tipo de Serviço -->
+    <Spinner
+        android:id="@+id/spinner_service_type"
+        android:layout_width="353dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/edittext_bg"
+        app:layout_constraintTop_toBottomOf="@id/spinner_pet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Campo de Data -->
+    <EditText
+        android:id="@+id/edit_date"
+        android:layout_width="353dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/edittext_bg"
+        android:hint="Selecione a data"
+        android:focusable="false"
+        android:clickable="true"
+        app:layout_constraintTop_toBottomOf="@id/spinner_service_type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Campo de Hora -->
+
+    <!-- Botão para Criar Agendamento -->
+
+    <EditText
+        android:id="@+id/edit_time"
+        android:layout_width="353dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/edittext_bg"
+        android:clickable="true"
+        android:focusable="false"
+        android:hint="Selecione a hora"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_date" />
+
+    <Button
+        android:id="@+id/buttonConfirmScheduling"
+        android:layout_width="251dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="50dp"
+        android:backgroundTint="#5ac0af"
+        android:text="Criar Agendamento"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/edit_time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
