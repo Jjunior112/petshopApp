@@ -112,11 +112,11 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
              context.startActivity(intent);
          });
 
-        //holder.buttonDeleteScheduling.setOnClickListener(v -> {
-        //    Intent intent = new Intent(context, DeleteSchedulingActivity.class);
-        //    intent.putExtra("schedulingId", scheduling.getId());
-        //    context.startActivity(intent);
-        //});
+        holder.buttonDeleteScheduling.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DeleteSchedulingActivity.class);
+           intent.putExtra("schedulingId", scheduling.getId());
+            context.startActivity(intent);
+        });
     }
 
     @Override
