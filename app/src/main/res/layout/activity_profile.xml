@@ -75,37 +75,38 @@
         app:layout_constraintTop_toBottomOf="@id/textCep" />
 
     <LinearLayout
+        android:id="@+id/layoutButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="2"
-        app:layout_constraintBottom_toTopOf="@+id/buttonListPets"
-        app:layout_constraintTop_toBottomOf="@+id/textCity"
-        tools:layout_editor_absoluteX="-10dp">
+        app:layout_constraintTop_toBottomOf="@id/textCity"
+        app:layout_constraintBottom_toTopOf="@id/buttonLogout">
 
         <ImageButton
-            android:id="@+id/buttonEditScheduling"
+            android:id="@+id/buttonEditProfile"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:backgroundTint="#808003"
-            android:contentDescription="Editar Agendamento"
+            android:backgroundTint="#4CAF50"
+            android:contentDescription="Editar perfil"
             android:padding="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_edit" />
 
         <ImageButton
-            android:id="@+id/buttonDeleteScheduling"
+            android:id="@+id/buttonDeleteProfile"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:backgroundTint="#E60808"
-            android:contentDescription="Excluir Agendamento"
+            android:backgroundTint="#E53935"
+            android:contentDescription="Excluir conta"
             android:padding="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_delete" />
