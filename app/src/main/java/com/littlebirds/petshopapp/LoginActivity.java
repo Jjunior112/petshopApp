@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -29,6 +30,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button buttonRedirectRegister, buttonLogin;
     private EditText editTextEmail, editTextPassword;
 
+    private TextView textErrorLogin;
+
     private static final String LOGIN_URL = "http://10.0.2.2:8080/user/login";
 
     @Override
@@ -47,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextTextPasswordLogin);
         buttonLogin = findViewById(R.id.buttonLogin);
         buttonRedirectRegister = findViewById(R.id.buttonRegisterRedirect);
+        textErrorLogin = findViewById(R.id.textErrorLogin);
 
         buttonLogin.setOnClickListener(v -> loginUser());
 
@@ -65,13 +69,15 @@ public class LoginActivity extends AppCompatActivity {
             // startActivity(new Intent(this, GoogleSignInActivity.class));
         });
     }
-
     private void loginUser() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
+        textErrorLogin.setVisibility(View.GONE); // Oculta erro ao tentar de novo
+
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
+            textErrorLogin.setText("Preencha todos os campos!");
+            textErrorLogin.setVisibility(View.VISIBLE);
             return;
         }
 
@@ -84,39 +90,46 @@ public class LoginActivity extends AppCompatActivity {
                     Request.Method.POST,
                     LOGIN_URL,
                     requestBody,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                // Exemplo: resposta com token JWT
-                                String token = response.getString("token");
-                                String role = response.getString("role");
-                                String userId = response.getString("userId");
-                                Toast.makeText(LoginActivity.this, "Login realizado!", Toast.LENGTH_SHORT).show();
+                    response -> {
+                        try {
+                            String token = response.getString("token");
+                            String role = response.getString("role");
+                            String userId = response.getString("userId");
 
-                                // Salvar o token no SharedPreferences
+                            // Sucesso = Toast permanece
+                            Toast.makeText(LoginActivity.this, "Login realizado!", Toast.LENGTH_SHORT).show();
 
-                                saveToken(token,userId);
+                            saveToken(token, userId);
 
-                                // e redirecionar o usuário:
+                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                            intent.putExtra("TOKEN", token);
+                            intent.putExtra("ROLE", role);
+                            startActivity(intent);
+                            finish();
 
-                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                                intent.putExtra("TOKEN", token);
-                                intent.putExtra("ROLE", role);
-                                startActivity(intent);
-                                finish();
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Toast.makeText(LoginActivity.this, "Erro ao processar resposta", Toast.LENGTH_SHORT).show();
-                            }
+                        } catch (JSONException e) {
+                            textErrorLogin.setText("Erro ao processar resposta.");
+                            textErrorLogin.setVisibility(View.VISIBLE);
                         }
                     },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(LoginActivity.this, "Erro ao fazer login: " + error.getMessage(), Toast.LENGTH_LONG).show();
-                        }
+                    error -> {
+                        String errorMessage = "Erro ao fazer login";
+
+                        try {
+                            if (error.networkResponse != null && error.networkResponse.data != null) {
+                                String body = new String(error.networkResponse.data, "UTF-8");
+                                JSONObject errorJson = new JSONObject(body);
+
+                                errorMessage = errorJson.optString(
+                                        "message",
+                                        "Não foi possível fazer login. Verifique os dados."
+                                );
+                            }
+                        } catch (Exception ignored) {}
+
+                        // Exibe a mensagem vinda do servidor
+                        textErrorLogin.setText(errorMessage);
+                        textErrorLogin.setVisibility(View.VISIBLE);
                     }
             );
 
@@ -127,6 +140,7 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     private void saveToken(String token,String userId) {
         getSharedPreferences("auth", MODE_PRIVATE)
                 .edit()
