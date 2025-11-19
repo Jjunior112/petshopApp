@@ -9,9 +9,6 @@
     android:background="@drawable/bg_green"
     tools:context=".NewSchedulingActivity">
 
-    <!-- Título -->
-
-    <!-- Seleção de Funcionário -->
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
@@ -25,80 +22,128 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Label: Funcionário -->
+    <TextView
+        android:id="@+id/label_worker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Funcionário"
+        android:textColor="#5ac0af"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <Spinner
         android:id="@+id/spinner_worker"
         android:layout_width="353dp"
         android:layout_height="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/edittext_bg"
-        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        app:layout_constraintTop_toBottomOf="@id/label_worker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Seleção de Pet -->
+    <!-- Label: Pet -->
+    <TextView
+        android:id="@+id/label_pet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pet"
+        android:textColor="#5ac0af"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/spinner_worker"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <Spinner
         android:id="@+id/spinner_pet"
         android:layout_width="353dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/edittext_bg"
-        app:layout_constraintTop_toBottomOf="@id/spinner_worker"
+        app:layout_constraintTop_toBottomOf="@id/label_pet"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Tipo de Serviço -->
+    <!-- Label: Serviço -->
+    <TextView
+        android:id="@+id/label_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Serviço"
+        android:textColor="#5ac0af"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/spinner_pet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <Spinner
         android:id="@+id/spinner_service_type"
         android:layout_width="353dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/edittext_bg"
-        app:layout_constraintTop_toBottomOf="@id/spinner_pet"
+        app:layout_constraintTop_toBottomOf="@id/label_service"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Campo de Data -->
+    <!-- Label: Data -->
+
+    <!-- Label: Hora -->
+
     <EditText
         android:id="@+id/edit_date"
         android:layout_width="353dp"
         android:layout_height="40dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/edittext_bg"
-        android:hint="Selecione a data"
-        android:focusable="false"
         android:clickable="true"
-        app:layout_constraintTop_toBottomOf="@id/spinner_service_type"
+        android:focusable="false"
+        android:hint="Selecione a data"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Campo de Hora -->
-
-    <!-- Botão para Criar Agendamento -->
+        app:layout_constraintTop_toBottomOf="@+id/spinner_service_type" />
 
     <EditText
         android:id="@+id/edit_time"
         android:layout_width="353dp"
         android:layout_height="40dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/edittext_bg"
         android:clickable="true"
         android:focusable="false"
         android:hint="Selecione a hora"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_date" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_date" />
 
     <Button
         android:id="@+id/buttonConfirmScheduling"
         android:layout_width="251dp"
         android:layout_height="45dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:backgroundTint="#5ac0af"
         android:text="Criar Agendamento"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/edit_time"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/edit_time" />
+
+    <include
+        android:id="@+id/bottom_navigation"
+        layout="@layout/bottom_navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
