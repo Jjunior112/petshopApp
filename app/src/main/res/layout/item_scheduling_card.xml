@@ -35,7 +35,7 @@
 
         <!-- Tipo de Serviço -->
         <TextView
-            android:id="@+id/textServiceType"
+            android:id="@+id/textServiceName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Serviço: Banho"

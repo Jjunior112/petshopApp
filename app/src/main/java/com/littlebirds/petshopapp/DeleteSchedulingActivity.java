@@ -82,7 +82,7 @@ public class DeleteSchedulingActivity extends AppCompatActivity {
                 response -> {
                     try {
                         String petName = response.getString("petName");
-                        String serviceType = response.getString("serviceType").replace("_", " ");
+                        String serviceType = response.getString("serviceName").replace("_", " ");
                         String dateTime = response.getString("date");
 
                         String dateFormatted = "";

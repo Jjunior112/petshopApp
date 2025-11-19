@@ -49,7 +49,7 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
         // deixa a primeira letra maiúscula
         formattedService = formattedService.substring(0, 1).toUpperCase() + formattedService.substring(1);
 
-        holder.textServiceType.setText("Serviço: " + formattedService);
+        holder.textServiceName.setText("Serviço: " + formattedService);
 
         // 🔹 Traduz o status antes de exibir
         String status = scheduling.getStatus();
@@ -125,14 +125,14 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
     }
 
     public static class SchedulingViewHolder extends RecyclerView.ViewHolder {
-        TextView textPetName,textWorkerName, textServiceType, textDate, textStatus;
+        TextView textPetName,textWorkerName, textServiceName, textDate, textStatus;
         ImageButton buttonEditScheduling, buttonDeleteScheduling;
 
         public SchedulingViewHolder(@NonNull View itemView) {
             super(itemView);
             textPetName = itemView.findViewById(R.id.textPetName);
             textWorkerName = itemView.findViewById(R.id.textWorkerName);
-            textServiceType = itemView.findViewById(R.id.textServiceType);
+            textServiceName = itemView.findViewById(R.id.textServiceName);
             textDate = itemView.findViewById(R.id.textDate);
             textStatus = itemView.findViewById(R.id.textStatus);
             buttonEditScheduling = itemView.findViewById(R.id.buttonEditScheduling);

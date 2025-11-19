@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,8 @@ public class SchedulingActivity extends AppCompatActivity {
     private SchedulingAdapter schedulingAdapter;
     private List<Scheduling> schedulingList = new ArrayList<>();
     private TextView textViewEmpty;
+
+    private Button buttonNewScheduling;
     private ImageButton buttonInicio, buttonAgendar, buttonPets, buttonAgendamentos, buttonPerfil;
 
     @Override
@@ -65,6 +68,7 @@ public class SchedulingActivity extends AppCompatActivity {
         buttonPets = findViewById(R.id.buttonPets);
         buttonAgendamentos = findViewById(R.id.buttonAgendamentos);
         buttonPerfil = findViewById(R.id.buttonPerfil);
+        buttonNewScheduling = findViewById(R.id.buttonNewScheduling);
 
         // Navegação
         buttonInicio.setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
@@ -74,6 +78,8 @@ public class SchedulingActivity extends AppCompatActivity {
                 Toast.makeText(this, "Você já está em Agendamentos", Toast.LENGTH_SHORT).show()
         );
         buttonPerfil.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
+
+        buttonNewScheduling.setOnClickListener(v -> startActivity(new Intent(this, NewSchedulingActivity.class)));
 
         loadSchedulings();
     }
@@ -114,7 +120,7 @@ public class SchedulingActivity extends AppCompatActivity {
                                     Long.parseLong(schJson.getString("id")),
                                     schJson.getString("petName"),
                                     schJson.getString("workerName"),
-                                    schJson.getString("serviceType"),
+                                    schJson.getString("serviceName"),
                                     schJson.getString("date"),
                                     schJson.optString("status", "Não informado")
                             );

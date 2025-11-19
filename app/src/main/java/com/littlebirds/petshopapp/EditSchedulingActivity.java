@@ -19,22 +19,26 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.HashMap;
 
 public class EditSchedulingActivity extends AppCompatActivity {
 
-    private TextView textPetName; // Somente leitura
+    private TextView textPetName;
     private EditText editDate, editTime;
     private Spinner spinnerServiceType;
     private Button buttonConfirmEditScheduling;
@@ -71,7 +75,6 @@ public class EditSchedulingActivity extends AppCompatActivity {
         fetchSchedulingById(schedulingId);
 
         buttonConfirmEditScheduling.setOnClickListener(v -> {
-            String serviceType = spinnerServiceType.getSelectedItem().toString();
             String date = editDate.getText().toString().trim();
             String time = editTime.getText().toString().trim();
 
@@ -80,22 +83,58 @@ public class EditSchedulingActivity extends AppCompatActivity {
                 return;
             }
 
-            // Converter de dd/MM/yyyy para formato ISO-8601
             String isoDate = convertToIsoFormat(date, time);
             if (isoDate == null) {
                 Toast.makeText(this, "Data inválida.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            editScheduling(schedulingId, serviceType, isoDate);
+            editScheduling(schedulingId, isoDate);
         });
     }
 
     private void setupServiceTypeSpinner() {
-        String[] services = {"BANHO E TOSA", "BANHO", "TOSA", "TOSA HIGIENICA"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, services);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerServiceType.setAdapter(adapter);
+        fetchServices();
+    }
+
+    private void fetchServices() {
+        String url = "http://10.0.2.2:8080/services";
+        SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
+        String token = prefs.getString("jwt_token", null);
+        if (token == null) return;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        List<ServiceItem> serviceItems = new ArrayList<>();
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject obj = response.getJSONObject(i);
+                            Long id = obj.getLong("id");
+                            String name = obj.getString("name");
+                            serviceItems.add(new ServiceItem(id, name));
+                        }
+
+                        ArrayAdapter<ServiceItem> adapter = new ArrayAdapter<>(this,
+                                android.R.layout.simple_spinner_item, serviceItems);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerServiceType.setAdapter(adapter);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> Toast.makeText(this, "Erro ao carregar serviços.", Toast.LENGTH_SHORT).show()) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        queue.add(request);
     }
 
     private void setupDateTimePickers() {
@@ -135,22 +174,20 @@ public class EditSchedulingActivity extends AppCompatActivity {
         if (token == null) return;
 
         RequestQueue queue = Volley.newRequestQueue(this);
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
                         String petName = response.getString("petName");
-                        String serviceType = response.getString("serviceType").replace("_", " ");
                         String dateTime = response.getString("date");
 
                         textPetName.setText(petName);
-                        spinnerServiceType.setSelection(getIndex(spinnerServiceType, serviceType));
 
                         if (dateTime.contains("T")) {
                             String[] parts = dateTime.split("T");
-                            String datePart = parts[0]; // yyyy-MM-dd
+                            String datePart = parts[0];
                             String timePart = parts[1].replace("Z", "");
 
-                            // ✅ Converter data para formato dd/MM/yyyy
                             String formattedDate = formatDateToBrazilian(datePart);
 
                             editDate.setText(formattedDate);
@@ -170,20 +207,27 @@ public class EditSchedulingActivity extends AppCompatActivity {
                 return headers;
             }
         };
+
         queue.add(request);
     }
 
-    private void editScheduling(Long id, String serviceType, String date) {
+    private void editScheduling(Long id, String isoDate) {
         String url = SCHEDULING_URL + id;
         SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", null);
         if (token == null) return;
 
+        ServiceItem selectedService = (ServiceItem) spinnerServiceType.getSelectedItem();
+        if (selectedService == null) {
+            Toast.makeText(this, "Selecione um serviço.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         RequestQueue queue = Volley.newRequestQueue(this);
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("serviceType", serviceType.replace(" ", "_"));
-            jsonBody.put("date", date);
+            jsonBody.put("serviceId", selectedService.id);
+            jsonBody.put("date", isoDate);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -200,18 +244,21 @@ public class EditSchedulingActivity extends AppCompatActivity {
                 return headers;
             }
         };
+
         queue.add(request);
     }
 
-    private int getIndex(Spinner spinner, String value) {
-        for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(value))
-                return i;
+    private String convertToIsoFormat(String brazilianDate, String time) {
+        try {
+            SimpleDateFormat brFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+            return isoFormat.format(brFormat.parse(brazilianDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
         }
-        return 0;
     }
 
-    // 🗓️ Converter data ISO (yyyy-MM-dd) → dd/MM/yyyy
     private String formatDateToBrazilian(String isoDate) {
         try {
             SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -223,15 +270,19 @@ public class EditSchedulingActivity extends AppCompatActivity {
         }
     }
 
-    // 🔁 Converter dd/MM/yyyy + hora → formato ISO (yyyy-MM-dd'T'HH:mm:ss'Z')
-    private String convertToIsoFormat(String brazilianDate, String time) {
-        try {
-            SimpleDateFormat brFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-            return isoFormat.format(brFormat.parse(brazilianDate)) + ""; // já inclui Z
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+    // Classe interna para o Spinner
+    private static class ServiceItem {
+        Long id;
+        String name;
+
+        ServiceItem(Long id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
 }
