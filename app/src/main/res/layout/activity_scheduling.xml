@@ -9,7 +9,23 @@
     android:background="@drawable/bg_green"
     tools:context=".SchedulingActivity">
 
+
     <!-- Título -->
+
+    <Button
+        android:id="@+id/buttonNewScheduling"
+        android:layout_width="129dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="152dp"
+        android:backgroundTint="#215247"
+        android:text="Agendamento +"
+        android:textColor="#FAF6F6"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.946"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
