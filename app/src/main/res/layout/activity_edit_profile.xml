@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/edit_profile_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="@drawable/bg_green"
+    tools:context=".EditProfileActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="250dp">
+
+        <EditText
+            android:id="@+id/editFullName"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:hint="Nome completo"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/editPhone"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Telefone"
+            android:inputType="phone" />
+
+        <EditText
+            android:id="@+id/editStreet"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:hint="Rua"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/editNeighborhood"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:hint="Bairro"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/editZipCode"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:hint="CEP (somente números)"
+            android:inputType="number"
+            android:maxLength="8"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/editCity"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:hint="Cidade"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/editState"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:hint="Estado"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/editComplement"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:hint="Complemento"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/editNumber"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:hint="Número"
+            android:inputType="number"
+            android:layout_marginTop="8dp" />
+
+        <LinearLayout
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="24dp">
+
+            <Button
+                android:id="@+id/buttonCancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancelar"
+                android:textColor="#666"
+                android:backgroundTint="#E0E0E0" />
+
+            <Button
+                android:id="@+id/buttonSave"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="Salvar"
+                android:textColor="#FFF"
+                android:backgroundTint="#215247" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
