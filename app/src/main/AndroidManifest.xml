@@ -32,6 +32,8 @@
         <activity android:name=".DeletePetActivity" />
         <activity android:name=".SchedulingActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".InactiveAccountActivity" />
         <activity android:name=".NewSchedulingActivity" />
         <activity android:name=".EditSchedulingActivity" />
         <activity android:name=".DeleteSchedulingActivity" />
