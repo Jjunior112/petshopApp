@@ -2,11 +2,13 @@ package com.littlebirds.petshopapp;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -18,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -34,6 +37,8 @@ public class NewSchedulingActivity extends AppCompatActivity {
 
     private Spinner spinnerWorker, spinnerPet, spinnerServiceType;
     private EditText editDate, editTime;
+
+    private ImageButton buttonInicio, buttonAgendar, buttonPets, buttonAgendamentos, buttonPerfil;
     private Button buttonConfirmScheduling;
 
     private ArrayList<String> workersList = new ArrayList<>();
@@ -42,9 +47,13 @@ public class NewSchedulingActivity extends AppCompatActivity {
     private ArrayList<String> petsList = new ArrayList<>();
     private ArrayList<Long> petsIdList = new ArrayList<>();
 
+    private ArrayList<String> servicesList = new ArrayList<>();
+    private ArrayList<Long> servicesIdList = new ArrayList<>();
+
     private static final String SCHEDULING_URL = "http://10.0.2.2:8080/schedulings";
     private static final String WORKERS_URL = "http://10.0.2.2:8080/user/workers";
     private static final String PETS_URL = "http://10.0.2.2:8080/pets";
+    private static final String SERVICES_URL = "http://10.0.2.2:8080/services";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,20 +73,31 @@ public class NewSchedulingActivity extends AppCompatActivity {
         editDate = findViewById(R.id.edit_date);
         editTime = findViewById(R.id.edit_time);
         buttonConfirmScheduling = findViewById(R.id.buttonConfirmScheduling);
+        buttonInicio = findViewById(R.id.buttonInicio);
+        buttonAgendar = findViewById(R.id.buttonAgendar);
+        buttonPets = findViewById(R.id.buttonPets);
+        buttonAgendamentos = findViewById(R.id.buttonAgendamentos);
+        buttonPerfil = findViewById(R.id.buttonPerfil);
 
-        setupServiceTypeSpinner();
+        buttonAgendar.setOnClickListener(v -> {
+            // opcional: apenas fechar menu ou atualizar UI
+            Toast.makeText(this, "Você já está em Agendar", Toast.LENGTH_SHORT).show();
+        });
+
+        buttonInicio.setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
+
+        buttonPets.setOnClickListener(v -> startActivity(new Intent(this, PetsActivity.class)));
+
+        buttonAgendamentos.setOnClickListener(v -> startActivity(new Intent(this, SchedulingActivity.class)));
+
+        buttonPerfil.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
+
         setupDateTimePickers();
         fetchWorkers();
         fetchPets();
+        fetchServices();
 
         buttonConfirmScheduling.setOnClickListener(v -> handleCreateScheduling());
-    }
-
-    private void setupServiceTypeSpinner() {
-        String[] services = {"BANHO E TOSA", "BANHO", "TOSA", "TOSA HIGIENICA"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, services);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerServiceType.setAdapter(adapter);
     }
 
     private void setupDateTimePickers() {
@@ -108,25 +128,6 @@ public class NewSchedulingActivity extends AppCompatActivity {
                     }, hour, minute, true);
             timePicker.show();
         });
-    }
-
-    private void handleCreateScheduling() {
-        int workerIndex = spinnerWorker.getSelectedItemPosition();
-        int petIndex = spinnerPet.getSelectedItemPosition();
-        String serviceType = spinnerServiceType.getSelectedItem().toString();
-        String date = editDate.getText().toString().trim();
-        String time = editTime.getText().toString().trim();
-
-        if (workerIndex < 0 || petIndex < 0 || date.isEmpty() || time.isEmpty()) {
-            Toast.makeText(this, "Preencha todos os campos.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String workerId = workersIdList.get(workerIndex);
-        Long petId = petsIdList.get(petIndex);
-        String dateTime = date + "T" + time + "Z";
-
-        createScheduling(workerId, petId, serviceType, dateTime);
     }
 
     private void fetchWorkers() {
@@ -199,7 +200,72 @@ public class NewSchedulingActivity extends AppCompatActivity {
         queue.add(request);
     }
 
-    private void createScheduling(String workerId, Long petId, String serviceType, String date) {
+    private void fetchServices() {
+        SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
+        String token = prefs.getString("jwt_token", null);
+        if (token == null) return;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.GET,
+                SERVICES_URL,
+                null,
+                response -> {
+                    servicesList.clear();
+                    servicesIdList.clear();
+                    try {
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject obj = response.getJSONObject(i);
+                            servicesIdList.add(obj.getLong("id"));
+                            servicesList.add(obj.getString("name"));
+                        }
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                this,
+                                android.R.layout.simple_spinner_item,
+                                servicesList
+                        );
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerServiceType.setAdapter(adapter);
+                    } catch (JSONException e) {
+                        Toast.makeText(this, "Erro ao processar serviços.", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(this, "Erro ao carregar serviços.", Toast.LENGTH_SHORT).show()
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        queue.add(request);
+    }
+
+    private void handleCreateScheduling() {
+        int workerIndex = spinnerWorker.getSelectedItemPosition();
+        int petIndex = spinnerPet.getSelectedItemPosition();
+        int serviceIndex = spinnerServiceType.getSelectedItemPosition();
+        String date = editDate.getText().toString().trim();
+        String time = editTime.getText().toString().trim();
+
+        if (workerIndex < 0 || petIndex < 0 || serviceIndex < 0 || date.isEmpty() || time.isEmpty()) {
+            Toast.makeText(this, "Preencha todos os campos.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String workerId = workersIdList.get(workerIndex);
+        Long petId = petsIdList.get(petIndex);
+        Long serviceId = servicesIdList.get(serviceIndex);
+        String dateTime = date + "T" + time + "-03:00";
+
+        createScheduling(workerId, petId, serviceId, dateTime);
+    }
+
+    private void createScheduling(String workerId, Long petId, Long serviceId, String date) {
         SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", null);
         if (token == null) return;
@@ -209,7 +275,7 @@ public class NewSchedulingActivity extends AppCompatActivity {
         try {
             jsonBody.put("workerId", workerId);
             jsonBody.put("petId", petId);
-            jsonBody.put("serviceType", serviceType.replace(" ", "_"));
+            jsonBody.put("serviceId", serviceId);
             jsonBody.put("date", date);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -228,4 +294,5 @@ public class NewSchedulingActivity extends AppCompatActivity {
         };
         queue.add(request);
     }
+
 }
