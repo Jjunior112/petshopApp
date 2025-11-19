@@ -13,6 +13,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -71,41 +74,30 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
         }
         holder.textStatus.setText("Status: " + statusTraduzido);
 
-// 🔹 Formata a data (exemplo: "2025-11-15T17:30:00Z" → "15/11/2025 - 14:30")
+
         try {
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
-            inputFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            // Formato exato do backend: 2025-11-18T21:00:00-03:00
+            DateTimeFormatter inputFormatter =
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
 
-            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault());
-            outputFormat.setTimeZone(TimeZone.getDefault());
+            // Converte para um ZonedDateTime respeitando o timezone do backend
+            ZonedDateTime zonedDateTime = ZonedDateTime.parse(scheduling.getDate(), inputFormatter);
 
-            Date parsedDate = inputFormat.parse(scheduling.getDate());
-            String formattedDate = outputFormat.format(parsedDate);
+            // Converte para Brasil (America/Sao_Paulo)
+            ZonedDateTime brazilTime = zonedDateTime.withZoneSameInstant(ZoneId.of("America/Sao_Paulo"));
+
+            // Formato desejado para exibir
+            DateTimeFormatter outputFormatter =
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm");
+
+            String formattedDate = brazilTime.format(outputFormatter);
 
             holder.textDate.setText("Data: " + formattedDate);
+
         } catch (Exception e) {
             e.printStackTrace();
             holder.textDate.setText("Data: inválida");
         }
-
-        try {
-            // 🔹 Formato da data recebido do backend (com 'Z' indicando UTC)
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
-            inputFormat.setTimeZone(TimeZone.getTimeZone("UTC")); // interpreta como UTC
-
-            // 🔹 Formato que será exibido ao usuário
-            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy - HH:mm", Locale.getDefault());
-            outputFormat.setTimeZone(TimeZone.getDefault()); // converte para o horário local
-
-            Date parsedDate = inputFormat.parse(scheduling.getDate());
-            String formattedDate = outputFormat.format(parsedDate);
-
-            holder.textDate.setText("Data: " + formattedDate);
-        } catch (Exception e) {
-            e.printStackTrace();
-            holder.textDate.setText("Data: inválida");
-        }
-
         holder.buttonEditScheduling.setOnClickListener(v -> {
              Intent intent = new Intent(context, EditSchedulingActivity.class);
             intent.putExtra("schedulingId", scheduling.getId());

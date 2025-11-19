@@ -116,13 +116,21 @@ public class SchedulingActivity extends AppCompatActivity {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject schJson = jsonArray.getJSONObject(i);
 
+                            String status = schJson.optString("status", "Não informado");
+
+                            // 🔥 FILTRO: mostrar apenas PENDING e COMPLETED
+                            if (!status.equalsIgnoreCase("PENDING") &&
+                                    !status.equalsIgnoreCase("COMPLETED")) {
+                                continue; // ignora este item e vai para o próximo
+                            }
+
                             Scheduling scheduling = new Scheduling(
                                     Long.parseLong(schJson.getString("id")),
                                     schJson.getString("petName"),
                                     schJson.getString("workerName"),
                                     schJson.getString("serviceName"),
                                     schJson.getString("date"),
-                                    schJson.optString("status", "Não informado")
+                                    status
                             );
 
                             schedulingList.add(scheduling);
