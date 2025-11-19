@@ -5,11 +5,13 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -37,6 +39,8 @@ public class NewSchedulingActivity extends AppCompatActivity {
 
     private Spinner spinnerWorker, spinnerPet, spinnerServiceType;
     private EditText editDate, editTime;
+
+    private TextView textErrorScheduling;
 
     private ImageButton buttonInicio, buttonAgendar, buttonPets, buttonAgendamentos, buttonPerfil;
     private Button buttonConfirmScheduling;
@@ -78,6 +82,8 @@ public class NewSchedulingActivity extends AppCompatActivity {
         buttonPets = findViewById(R.id.buttonPets);
         buttonAgendamentos = findViewById(R.id.buttonAgendamentos);
         buttonPerfil = findViewById(R.id.buttonPerfil);
+        textErrorScheduling = findViewById(R.id.textErrorScheduling);
+
 
         buttonAgendar.setOnClickListener(v -> {
             // opcional: apenas fechar menu ou atualizar UI
@@ -246,6 +252,8 @@ public class NewSchedulingActivity extends AppCompatActivity {
     }
 
     private void handleCreateScheduling() {
+        textErrorScheduling.setVisibility(View.GONE);
+
         int workerIndex = spinnerWorker.getSelectedItemPosition();
         int petIndex = spinnerPet.getSelectedItemPosition();
         int serviceIndex = spinnerServiceType.getSelectedItemPosition();
@@ -253,7 +261,8 @@ public class NewSchedulingActivity extends AppCompatActivity {
         String time = editTime.getText().toString().trim();
 
         if (workerIndex < 0 || petIndex < 0 || serviceIndex < 0 || date.isEmpty() || time.isEmpty()) {
-            Toast.makeText(this, "Preencha todos os campos.", Toast.LENGTH_SHORT).show();
+            textErrorScheduling.setText("Preencha todos os campos.");
+            textErrorScheduling.setVisibility(View.VISIBLE);
             return;
         }
 
@@ -270,7 +279,10 @@ public class NewSchedulingActivity extends AppCompatActivity {
         String token = prefs.getString("jwt_token", null);
         if (token == null) return;
 
+        textErrorScheduling.setVisibility(View.GONE);
+
         RequestQueue queue = Volley.newRequestQueue(this);
+
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("workerId", workerId);
@@ -281,9 +293,29 @@ public class NewSchedulingActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, SCHEDULING_URL, jsonBody,
-                response -> Toast.makeText(this, "Agendamento criado com sucesso!", Toast.LENGTH_SHORT).show(),
-                error -> Toast.makeText(this, "Erro ao criar agendamento.", Toast.LENGTH_SHORT).show()) {
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                SCHEDULING_URL,
+                jsonBody,
+                response -> {
+                    Toast.makeText(this, "Agendamento criado com sucesso!", Toast.LENGTH_SHORT).show();
+                    finish(); // opcional
+                },
+                error -> {
+                    String errorMessage = "Erro ao criar agendamento.";
+
+                    try {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            String body = new String(error.networkResponse.data, "UTF-8");
+                            JSONObject json = new JSONObject(body);
+                            errorMessage = json.optString("message", errorMessage);
+                        }
+                    } catch (Exception ignored) {}
+
+                    textErrorScheduling.setText(errorMessage);
+                    textErrorScheduling.setVisibility(View.VISIBLE);
+                }
+        ) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -292,6 +324,7 @@ public class NewSchedulingActivity extends AppCompatActivity {
                 return headers;
             }
         };
+
         queue.add(request);
     }
 
