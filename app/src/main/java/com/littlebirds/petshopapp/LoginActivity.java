@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                             // Sucesso = Toast permanece
                             Toast.makeText(LoginActivity.this, "Login realizado!", Toast.LENGTH_SHORT).show();
 
-                            saveToken(token, userId);
+                            saveToken(token, userId,role);
 
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             intent.putExtra("TOKEN", token);
@@ -141,11 +141,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void saveToken(String token,String userId) {
+    private void saveToken(String token,String userId,String role) {
         getSharedPreferences("auth", MODE_PRIVATE)
                 .edit()
                 .putString("jwt_token", token)
                 .putString("user_id", userId)
+                .putString("user_role", role)
                 .apply();
     }
 }
