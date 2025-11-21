@@ -43,6 +43,8 @@ public class SchedulingActivity extends AppCompatActivity {
     private Button buttonNewScheduling;
     private ImageButton buttonInicio, buttonAgendar, buttonPets, buttonAgendamentos, buttonPerfil;
 
+    private String userRole = "CLIENT";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +71,10 @@ public class SchedulingActivity extends AppCompatActivity {
         buttonAgendamentos = findViewById(R.id.buttonAgendamentos);
         buttonPerfil = findViewById(R.id.buttonPerfil);
         buttonNewScheduling = findViewById(R.id.buttonNewScheduling);
+
+        // Obtém ROLE armazenada
+        SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
+        userRole = prefs.getString("user_role", "CLIENT");
 
         // Navegação
         buttonInicio.setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
@@ -118,11 +124,29 @@ public class SchedulingActivity extends AppCompatActivity {
 
                             String status = schJson.optString("status", "Não informado");
 
-                            // 🔥 FILTRO: mostrar apenas PENDING e COMPLETED
-                            if (!status.equalsIgnoreCase("PENDING") &&
-                                    !status.equalsIgnoreCase("COMPLETED")) {
-                                continue; // ignora este item e vai para o próximo
+                            // -----------------------------
+                            // FILTRO DE AGENDAMENTOS POR ROLE
+                            // -----------------------------
+                            boolean allow = false;
+
+                            switch (userRole.toUpperCase()) {
+                                case "CLIENT":
+                                    allow = status.equalsIgnoreCase("PENDING")
+                                            || status.equalsIgnoreCase("COMPLETED");
+                                    break;
+
+                                case "WORKER":
+                                    allow = status.equalsIgnoreCase("PENDING")
+                                            || status.equalsIgnoreCase("COMPLETED")
+                                            || status.equalsIgnoreCase("CANCELED");
+                                    break;
+
+                                case "ADMIN":
+                                    allow = true; // Admin vê tudo
+                                    break;
                             }
+
+                            if (!allow) continue;
 
                             Scheduling scheduling = new Scheduling(
                                     Long.parseLong(schJson.getString("id")),

@@ -107,22 +107,22 @@ public class EditSchedulingActivity extends AppCompatActivity {
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 response -> {
+                    List<ServiceItem> serviceItems = new ArrayList<>();
                     try {
-                        List<ServiceItem> serviceItems = new ArrayList<>();
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject obj = response.getJSONObject(i);
                             Long id = obj.getLong("id");
                             String name = obj.getString("name");
                             serviceItems.add(new ServiceItem(id, name));
                         }
-
-                        ArrayAdapter<ServiceItem> adapter = new ArrayAdapter<>(this,
-                                android.R.layout.simple_spinner_item, serviceItems);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerServiceType.setAdapter(adapter);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
+                    ArrayAdapter<ServiceItem> adapter = new ArrayAdapter<>(this,
+                            android.R.layout.simple_spinner_item, serviceItems);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerServiceType.setAdapter(adapter);
                 },
                 error -> Toast.makeText(this, "Erro ao carregar serviços.", Toast.LENGTH_SHORT).show()) {
 
@@ -141,28 +141,29 @@ public class EditSchedulingActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
 
         editDate.setOnClickListener(v -> {
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-
             DatePickerDialog datePicker = new DatePickerDialog(this,
                     (view, y, m, d) -> {
                         m += 1;
                         String date = String.format(Locale.getDefault(), "%02d/%02d/%04d", d, m, y);
                         editDate.setText(date);
-                    }, year, month, day);
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH));
+
             datePicker.show();
         });
 
         editTime.setOnClickListener(v -> {
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
-
             TimePickerDialog timePicker = new TimePickerDialog(this,
                     (view, h, m) -> {
                         String time = String.format(Locale.getDefault(), "%02d:%02d:00", h, m);
                         editTime.setText(time);
-                    }, hour, minute, true);
+                    },
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE),
+                    true);
+
             timePicker.show();
         });
     }
@@ -186,14 +187,17 @@ public class EditSchedulingActivity extends AppCompatActivity {
                         if (dateTime.contains("T")) {
                             String[] parts = dateTime.split("T");
                             String datePart = parts[0];
-                            String timePart = parts[1].replace("Z", "");
+                            String timePart = parts[1];
 
-                            String formattedDate = formatDateToBrazilian(datePart);
+                            // Remove fuso
+                            if (timePart.contains("-"))
+                                timePart = timePart.substring(0, 8);
+                            if (timePart.contains("+"))
+                                timePart = timePart.substring(0, 8);
 
-                            editDate.setText(formattedDate);
+                            editDate.setText(formatDateToBrazilian(datePart));
                             editTime.setText(timePart);
                         }
-
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -217,24 +221,24 @@ public class EditSchedulingActivity extends AppCompatActivity {
         String token = prefs.getString("jwt_token", null);
         if (token == null) return;
 
-        ServiceItem selectedService = (ServiceItem) spinnerServiceType.getSelectedItem();
-        if (selectedService == null) {
+        ServiceItem service = (ServiceItem) spinnerServiceType.getSelectedItem();
+        if (service == null) {
             Toast.makeText(this, "Selecione um serviço.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        JSONObject jsonBody = new JSONObject();
+        JSONObject json = new JSONObject();
         try {
-            jsonBody.put("serviceId", selectedService.id);
-            jsonBody.put("date", isoDate);
+            json.put("serviceId", service.id);
+            json.put("date", isoDate);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, jsonBody,
-                response -> Toast.makeText(this, "Agendamento atualizado com sucesso!", Toast.LENGTH_SHORT).show(),
-                error -> Toast.makeText(this, "Erro ao atualizar agendamento.", Toast.LENGTH_SHORT).show()) {
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, json,
+                response -> Toast.makeText(this, "Agendamento atualizado!", Toast.LENGTH_SHORT).show(),
+                error -> Toast.makeText(this, "Erro ao atualizar.", Toast.LENGTH_SHORT).show()) {
 
             @Override
             public Map<String, String> getHeaders() {
@@ -245,15 +249,22 @@ public class EditSchedulingActivity extends AppCompatActivity {
             }
         };
 
-        queue.add(request);
+        queue.add(req);
     }
 
+    // CONVERSÃO CORRETA — DATA + HORA + FUSO REAL (-03:00)
     private String convertToIsoFormat(String brazilianDate, String time) {
         try {
-            SimpleDateFormat brFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-            return isoFormat.format(brFormat.parse(brazilianDate));
-        } catch (ParseException e) {
+            // Entrada: 25/11/2025 e 14:30:00
+            String[] dateParts = brazilianDate.split("/");
+            String day = dateParts[0];
+            String month = dateParts[1];
+            String year = dateParts[2];
+
+            // Monta no formato ISO sem conversão de fuso
+            return year + "-" + month + "-" + day + "T" + time + "-03:00";
+
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -261,16 +272,16 @@ public class EditSchedulingActivity extends AppCompatActivity {
 
     private String formatDateToBrazilian(String isoDate) {
         try {
-            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            SimpleDateFormat brFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            return brFormat.format(isoFormat.parse(isoDate));
+            SimpleDateFormat iso = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            SimpleDateFormat br = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            return br.format(iso.parse(isoDate));
         } catch (ParseException e) {
             e.printStackTrace();
             return isoDate;
         }
     }
 
-    // Classe interna para o Spinner
+    // Classe interna do Spinner
     private static class ServiceItem {
         Long id;
         String name;
