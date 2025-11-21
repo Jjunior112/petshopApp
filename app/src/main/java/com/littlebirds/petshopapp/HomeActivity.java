@@ -4,8 +4,10 @@ package com.littlebirds.petshopapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -36,12 +38,15 @@ public class HomeActivity extends AppCompatActivity {
     private RecyclerView recyclerServices;
     private ServicesAdapter adapter;
 
+    private TextView title;
+
     private ImageButton buttonInicio, buttonAgendar, buttonPets, buttonAgendamentos, buttonPerfil;
 
     private Button button;
-
+    private String userRole = "CLIENT";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
@@ -52,34 +57,57 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
-
         buttonInicio = findViewById(R.id.buttonInicio);
         buttonAgendar = findViewById(R.id.buttonAgendar);
         buttonPets = findViewById(R.id.buttonPets);
         buttonAgendamentos = findViewById(R.id.buttonAgendamentos);
         buttonPerfil = findViewById(R.id.buttonPerfil);
         button = findViewById(R.id.button);
+        title = findViewById(R.id.textView9);
         recyclerServices = findViewById(R.id.recyclerServices);
         recyclerServices.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        // 🔹 Define as ações de clique
+        SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
+        userRole = prefs.getString("user_role", "CLIENT");
 
-        buttonInicio.setOnClickListener(v -> {
-            // opcional: apenas fechar menu ou atualizar UI
-            Toast.makeText(this, "Você já está na Home", Toast.LENGTH_SHORT).show();
-        });
+        // -----------------------------
+        // OCULTAR BOTÕES PARA WORKER
+        // -----------------------------
+        if (userRole.equalsIgnoreCase("WORKER")) {
+            buttonAgendar.setVisibility(View.GONE);
+            buttonPets.setVisibility(View.GONE);
+            button.setVisibility(View.GONE);
+            title.setText("Bem vindo!");
+        }
 
-        button.setOnClickListener(v -> startActivity(new Intent(this, NewSchedulingActivity.class)));
+        // AÇÕES DOS BOTÕES
+        buttonInicio.setOnClickListener(v ->
+                Toast.makeText(this, "Você já está na Home", Toast.LENGTH_SHORT).show()
+        );
 
-        buttonAgendar.setOnClickListener(v -> startActivity(new Intent(this, NewSchedulingActivity.class)));
+        button.setOnClickListener(v ->
+                startActivity(new Intent(this, NewSchedulingActivity.class))
+        );
 
-        buttonPets.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, PetsActivity.class)));
+        buttonAgendar.setOnClickListener(v ->
+                startActivity(new Intent(this, NewSchedulingActivity.class))
+        );
 
-        buttonAgendamentos.setOnClickListener(v -> startActivity(new Intent(this, SchedulingActivity.class)));
+        buttonPets.setOnClickListener(v ->
+                startActivity(new Intent(HomeActivity.this, PetsActivity.class))
+        );
 
-        buttonPerfil.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
+        buttonAgendamentos.setOnClickListener(v ->
+                startActivity(new Intent(this, SchedulingActivity.class))
+        );
 
-        loadServices();
+        buttonPerfil.setOnClickListener(v ->
+                startActivity(new Intent(this, ProfileActivity.class))
+        );
+
+        if(userRole.equalsIgnoreCase("CLIENT")) {
+            loadServices();
+        }
     }
 
     private void loadServices() {

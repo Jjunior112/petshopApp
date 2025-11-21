@@ -37,6 +37,7 @@
         <activity android:name=".NewSchedulingActivity" />
         <activity android:name=".EditSchedulingActivity" />
         <activity android:name=".DeleteSchedulingActivity" />
+        <activity android:name=".EndSchedulingActivity" />
 
     </application>
 

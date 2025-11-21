@@ -68,7 +68,21 @@
             android:gravity="center"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:weightSum="2">
+            android:weightSum="3">
+
+            <ImageButton
+                android:id="@+id/buttonEndScheduling"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:backgroundTint="#FB52E608"
+                android:contentDescription="Finalizar Agendamento"
+                android:padding="8dp"
+                android:scaleType="centerInside"
+                android:visibility="gone"
+                android:src="@drawable/ic_check_scheduling" />
 
             <ImageButton
                 android:id="@+id/buttonEditScheduling"
@@ -95,6 +109,11 @@
                 android:padding="8dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_delete" />
+
+
+
         </LinearLayout>
+
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

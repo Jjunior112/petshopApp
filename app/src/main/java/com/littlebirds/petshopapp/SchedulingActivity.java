@@ -72,20 +72,34 @@ public class SchedulingActivity extends AppCompatActivity {
         buttonPerfil = findViewById(R.id.buttonPerfil);
         buttonNewScheduling = findViewById(R.id.buttonNewScheduling);
 
+
         // Obtém ROLE armazenada
         SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
         userRole = prefs.getString("user_role", "CLIENT");
+
+        // -----------------------------
+        // OCULTAR BOTÕES PARA WORKER
+        // -----------------------------
+        if (userRole.equalsIgnoreCase("WORKER")) {
+            buttonAgendar.setVisibility(View.GONE);
+            buttonPets.setVisibility(View.GONE);
+            buttonNewScheduling.setVisibility(View.GONE);
+
+        }
 
         // Navegação
         buttonInicio.setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
         buttonPets.setOnClickListener(v -> startActivity(new Intent(this, PetsActivity.class)));
         buttonAgendar.setOnClickListener(v -> startActivity(new Intent(this, NewSchedulingActivity.class)));
-        buttonAgendamentos.setOnClickListener(v ->
-                Toast.makeText(this, "Você já está em Agendamentos", Toast.LENGTH_SHORT).show()
-        );
+
+
         buttonPerfil.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
 
         buttonNewScheduling.setOnClickListener(v -> startActivity(new Intent(this, NewSchedulingActivity.class)));
+
+        buttonAgendamentos.setOnClickListener(v ->
+                Toast.makeText(this, "Você já está em Agendamentos", Toast.LENGTH_SHORT).show()
+        );
 
         loadSchedulings();
     }
@@ -130,6 +144,7 @@ public class SchedulingActivity extends AppCompatActivity {
                             boolean allow = false;
 
                             switch (userRole.toUpperCase()) {
+
                                 case "CLIENT":
                                     allow = status.equalsIgnoreCase("PENDING")
                                             || status.equalsIgnoreCase("COMPLETED");
@@ -142,7 +157,7 @@ public class SchedulingActivity extends AppCompatActivity {
                                     break;
 
                                 case "ADMIN":
-                                    allow = true; // Admin vê tudo
+                                    allow = true;
                                     break;
                             }
 

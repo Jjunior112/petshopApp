@@ -2,8 +2,7 @@ package com.littlebirds.petshopapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.icu.text.SimpleDateFormat;
-import android.icu.util.TimeZone;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,52 +39,46 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
     public void onBindViewHolder(@NonNull SchedulingViewHolder holder, int position) {
         Scheduling scheduling = schedulingList.get(position);
 
-        holder.textPetName.setText( scheduling.getPetName());
+        // Recupera ROLE do usuário
+        SharedPreferences prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE);
+        String userRole = prefs.getString("user_role", "CLIENT");
 
+        // Nome do pet
+        holder.textPetName.setText(scheduling.getPetName());
+
+        // Funcionário
         holder.textWorkerName.setText("Funcionário: " + scheduling.getWorkerName());
 
+        // Serviço formatado
         String formattedService = scheduling.getServiceType()
-                .replace("_", " ") // troca "_" por espaço
-                .toLowerCase(Locale.getDefault()); // coloca tudo em minúsculas
+                .replace("_", " ")
+                .toLowerCase(Locale.getDefault());
 
-        // deixa a primeira letra maiúscula
         formattedService = formattedService.substring(0, 1).toUpperCase() + formattedService.substring(1);
-
         holder.textServiceName.setText("Serviço: " + formattedService);
 
-        // 🔹 Traduz o status antes de exibir
+        // Status traduzido
         String status = scheduling.getStatus();
         String statusTraduzido;
 
         switch (status.toUpperCase()) {
-            case "PENDING":
-                statusTraduzido = "Pendente";
-                break;
-            case "CANCELED":
-                statusTraduzido = "Cancelado";
-                break;
-            case "COMPLETED":
-                statusTraduzido = "Concluído";
-                break;
-            default:
-                statusTraduzido = "Desconhecido";
-                break;
+            case "PENDING": statusTraduzido = "Pendente"; break;
+            case "CANCELED": statusTraduzido = "Cancelado"; break;
+            case "COMPLETED": statusTraduzido = "Concluído"; break;
+            default: statusTraduzido = "Desconhecido"; break;
         }
+
         holder.textStatus.setText("Status: " + statusTraduzido);
 
-
+        // Conversão de data/hora
         try {
-            // Formato exato do backend: 2025-11-18T21:00:00-03:00
             DateTimeFormatter inputFormatter =
                     DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
 
-            // Converte para um ZonedDateTime respeitando o timezone do backend
             ZonedDateTime zonedDateTime = ZonedDateTime.parse(scheduling.getDate(), inputFormatter);
 
-            // Converte para Brasil (America/Sao_Paulo)
             ZonedDateTime brazilTime = zonedDateTime.withZoneSameInstant(ZoneId.of("America/Sao_Paulo"));
 
-            // Formato desejado para exibir
             DateTimeFormatter outputFormatter =
                     DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm");
 
@@ -98,15 +90,60 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
             e.printStackTrace();
             holder.textDate.setText("Data: inválida");
         }
-        holder.buttonEditScheduling.setOnClickListener(v -> {
-             Intent intent = new Intent(context, EditSchedulingActivity.class);
-            intent.putExtra("schedulingId", scheduling.getId());
-             context.startActivity(intent);
-         });
 
+        // ---------------------------------------------------------
+        // 🔥 VISIBILIDADE DOS BOTÕES POR ROLE
+        // ---------------------------------------------------------
+        if (userRole.equalsIgnoreCase("CLIENT")) {
+            holder.buttonEndScheduling.setVisibility(View.GONE);
+            if (!status.equalsIgnoreCase("CANCELED") &&
+                    !status.equalsIgnoreCase("COMPLETED")) {
+                holder.buttonEditScheduling.setVisibility(View.VISIBLE);
+                holder.buttonDeleteScheduling.setVisibility(View.VISIBLE);
+            } else {
+                holder.buttonEditScheduling.setVisibility(View.GONE);
+                holder.buttonDeleteScheduling.setVisibility(View.GONE);
+            }
+        }
+        else if (userRole.equalsIgnoreCase("WORKER")) {
+            // Exibe apenas se NÃO estiver cancelado e NÃO estiver concluído
+            if (!status.equalsIgnoreCase("CANCELED") &&
+                    !status.equalsIgnoreCase("COMPLETED")) {
+                holder.buttonEndScheduling.setVisibility(View.VISIBLE);
+            } else {
+                holder.buttonEndScheduling.setVisibility(View.GONE);
+                holder.buttonEditScheduling.setVisibility(View.GONE);
+                holder.buttonDeleteScheduling.setVisibility(View.GONE);
+            }
+        }
+        else if (userRole.equalsIgnoreCase("ADMIN")) {
+            holder.buttonEndScheduling.setVisibility(View.VISIBLE);
+            holder.buttonEditScheduling.setVisibility(View.VISIBLE);
+            holder.buttonDeleteScheduling.setVisibility(View.VISIBLE);
+        }
+
+        // ---------------------------------------------------------
+        // 🔥 AÇÕES DOS BOTÕES
+        // ---------------------------------------------------------
+
+        // Editar agendamento
+        holder.buttonEditScheduling.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EditSchedulingActivity.class);
+            intent.putExtra("schedulingId", scheduling.getId());
+            context.startActivity(intent);
+        });
+
+        // Excluir agendamento
         holder.buttonDeleteScheduling.setOnClickListener(v -> {
             Intent intent = new Intent(context, DeleteSchedulingActivity.class);
-           intent.putExtra("schedulingId", scheduling.getId());
+            intent.putExtra("schedulingId", scheduling.getId());
+            context.startActivity(intent);
+        });
+
+        // Finalizar agendamento (WORKER ou ADMIN)
+        holder.buttonEndScheduling.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EndSchedulingActivity.class);
+            intent.putExtra("schedulingId", scheduling.getId());
             context.startActivity(intent);
         });
     }
@@ -116,19 +153,26 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
         return schedulingList.size();
     }
 
+    // ---------------------------------------------------------
+    // ViewHolder
+    // ---------------------------------------------------------
     public static class SchedulingViewHolder extends RecyclerView.ViewHolder {
-        TextView textPetName,textWorkerName, textServiceName, textDate, textStatus;
-        ImageButton buttonEditScheduling, buttonDeleteScheduling;
+
+        TextView textPetName, textWorkerName, textServiceName, textDate, textStatus;
+        ImageButton buttonEditScheduling, buttonDeleteScheduling, buttonEndScheduling;
 
         public SchedulingViewHolder(@NonNull View itemView) {
             super(itemView);
+
             textPetName = itemView.findViewById(R.id.textPetName);
             textWorkerName = itemView.findViewById(R.id.textWorkerName);
             textServiceName = itemView.findViewById(R.id.textServiceName);
             textDate = itemView.findViewById(R.id.textDate);
             textStatus = itemView.findViewById(R.id.textStatus);
+
             buttonEditScheduling = itemView.findViewById(R.id.buttonEditScheduling);
             buttonDeleteScheduling = itemView.findViewById(R.id.buttonDeleteScheduling);
+            buttonEndScheduling = itemView.findViewById(R.id.buttonEndScheduling);
         }
     }
 }

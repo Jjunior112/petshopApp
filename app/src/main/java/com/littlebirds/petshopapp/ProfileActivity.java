@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView textFullName, textEmail, textAddress, textCep, textCity;
     private Button buttonLogout;
 
+    private String userRole = "CLIENT";
     private static final String BASE_URL = "http://10.0.2.2:8080/user/";
 
     @Override
@@ -64,6 +66,20 @@ public class ProfileActivity extends AppCompatActivity {
         textCity = findViewById(R.id.textCity);
         buttonLogout = findViewById(R.id.buttonLogout);
 
+        SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
+        userRole = prefs.getString("user_role", "CLIENT");
+
+        // -----------------------------
+        // OCULTAR BOTÕES PARA WORKER
+        // -----------------------------
+        if (userRole.equalsIgnoreCase("WORKER")) {
+            buttonAgendar.setVisibility(View.GONE);
+            buttonPets.setVisibility(View.GONE);
+            buttonDeleteProfile.setVisibility(View.GONE);
+            buttonEditProfile.setVisibility(View.GONE);
+        }
+        // ------------------------------------------------------------------
+
         // Navegação inferior
         buttonPerfil.setOnClickListener(v ->
                 Toast.makeText(this, "Você já está no seu perfil", Toast.LENGTH_SHORT).show()
@@ -91,13 +107,13 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Botão Excluir Conta — agora apenas redireciona
+        // Botão Excluir Conta
         buttonDeleteProfile.setOnClickListener(v -> confirmDeleteAccount());
 
         // Logout
         buttonLogout.setOnClickListener(v -> logoutUser());
 
-        // Carrega dados do usuário
+        // Carrega dados
         loadUserProfile();
     }
 

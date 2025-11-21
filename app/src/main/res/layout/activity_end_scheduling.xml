@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/editScheduling"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_green"
+    tools:context=".EndSchedulingActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:text="Finalizar Serviço"
+        android:textColor="#5ac0af"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Nome do pet (somente leitura) -->
+    <TextView
+        android:id="@+id/text_service_type_end"
+        android:layout_width="353dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/edittext_bg"
+        android:textColor="#000000"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:text="Nome do Pet"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <TextView
+        android:id="@+id/text_date_end"
+        android:layout_width="353dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edittext_bg"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:text="Serviço"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_service_type_end" />
+
+    <TextView
+        android:id="@+id/text_time_end"
+        android:layout_width="353dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edittext_bg"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:text="Data"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_date_end" />
+
+    <TextView
+        android:id="@+id/text_pet_name_end"
+        android:layout_width="353dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/edittext_bg"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:text="Hora"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_time_end" />
+
+    <Button
+        android:id="@+id/buttonConfirmEndScheduling"
+        android:layout_width="251dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="50dp"
+        android:backgroundTint="#5ac0af"
+        android:text="Finalizar serviço"
+        app:layout_constraintTop_toBottomOf="@+id/text_pet_name_end"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
