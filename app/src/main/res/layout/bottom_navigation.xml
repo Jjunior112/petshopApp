@@ -57,4 +57,26 @@
         android:textSize="12sp"
         android:src="@drawable/ic_profile"/>
 
+    <ImageButton
+        android:id="@+id/buttonList"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Perfil"
+        android:backgroundTint="#5ac0af"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:src="@drawable/ic_list"/>
+
+    <ImageButton
+        android:id="@+id/buttonAdd"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Perfil"
+        android:backgroundTint="#5ac0af"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:src="@drawable/ic_add"/>
+
 </LinearLayout>

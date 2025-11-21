@@ -40,7 +40,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private TextView title;
 
-    private ImageButton buttonInicio, buttonAgendar, buttonPets, buttonAgendamentos, buttonPerfil;
+    private ImageButton buttonInicio, buttonAgendar, buttonPets, buttonAgendamentos, buttonPerfil,buttonAdd,buttonList;
 
     private Button button;
     private String userRole = "CLIENT";
@@ -62,6 +62,8 @@ public class HomeActivity extends AppCompatActivity {
         buttonPets = findViewById(R.id.buttonPets);
         buttonAgendamentos = findViewById(R.id.buttonAgendamentos);
         buttonPerfil = findViewById(R.id.buttonPerfil);
+        buttonList = findViewById(R.id.buttonList);
+        buttonAdd = findViewById(R.id.buttonAdd);
         button = findViewById(R.id.button);
         title = findViewById(R.id.textView9);
         recyclerServices = findViewById(R.id.recyclerServices);
@@ -77,6 +79,21 @@ public class HomeActivity extends AppCompatActivity {
             buttonAgendar.setVisibility(View.GONE);
             buttonPets.setVisibility(View.GONE);
             button.setVisibility(View.GONE);
+            title.setText("Bem vindo!");
+        }
+
+        // -----------------------------
+        // OCULTAR BOTÕES PARA ADMIN
+        // -----------------------------
+        if (userRole.equalsIgnoreCase("ADMIN")) {
+            buttonAgendar.setVisibility(View.GONE);
+            buttonPets.setVisibility(View.GONE);
+            button.setVisibility(View.GONE);
+            buttonAgendamentos.setVisibility(View.GONE);
+            buttonPerfil.setVisibility(View.GONE);
+            buttonAdd.setVisibility(View.VISIBLE);
+            buttonList.setVisibility(View.VISIBLE);
+
             title.setText("Bem vindo!");
         }
 
