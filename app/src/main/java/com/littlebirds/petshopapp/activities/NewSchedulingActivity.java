@@ -2,20 +2,17 @@ package com.littlebirds.petshopapp.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -36,24 +33,21 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NewSchedulingActivity extends AppCompatActivity {
+public class NewSchedulingActivity extends BaseActivity {
 
     private Spinner spinnerWorker, spinnerPet, spinnerServiceType;
     private EditText editDate, editTime;
-
     private TextView textErrorScheduling;
-
-    private ImageButton buttonInicio, buttonAgendar, buttonPets, buttonAgendamentos, buttonPerfil;
     private Button buttonConfirmScheduling;
 
-    private ArrayList<String> workersList = new ArrayList<>();
-    private ArrayList<String> workersIdList = new ArrayList<>();
+    private final ArrayList<String> workersList = new ArrayList<>();
+    private final ArrayList<String> workersIdList = new ArrayList<>();
 
-    private ArrayList<String> petsList = new ArrayList<>();
-    private ArrayList<Long> petsIdList = new ArrayList<>();
+    private final ArrayList<String> petsList = new ArrayList<>();
+    private final ArrayList<Long> petsIdList = new ArrayList<>();
 
-    private ArrayList<String> servicesList = new ArrayList<>();
-    private ArrayList<Long> servicesIdList = new ArrayList<>();
+    private final ArrayList<String> servicesList = new ArrayList<>();
+    private final ArrayList<Long> servicesIdList = new ArrayList<>();
 
     private static final String SCHEDULING_URL = "http://10.0.2.2:8080/schedulings";
     private static final String WORKERS_URL = "http://10.0.2.2:8080/user/workers";
@@ -66,6 +60,9 @@ public class NewSchedulingActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_new_scheduling);
 
+        // Barra inferior
+        setupBottomNav();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.newScheduling), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -77,27 +74,8 @@ public class NewSchedulingActivity extends AppCompatActivity {
         spinnerServiceType = findViewById(R.id.spinner_service_type);
         editDate = findViewById(R.id.edit_date);
         editTime = findViewById(R.id.edit_time);
-        buttonConfirmScheduling = findViewById(R.id.buttonConfirmScheduling);
-        buttonInicio = findViewById(R.id.buttonInicio);
-        buttonAgendar = findViewById(R.id.buttonAgendar);
-        buttonPets = findViewById(R.id.buttonPets);
-        buttonAgendamentos = findViewById(R.id.buttonAgendamentos);
-        buttonPerfil = findViewById(R.id.buttonPerfil);
         textErrorScheduling = findViewById(R.id.textErrorScheduling);
-
-
-        buttonAgendar.setOnClickListener(v -> {
-            // opcional: apenas fechar menu ou atualizar UI
-            Toast.makeText(this, "Você já está em Agendar", Toast.LENGTH_SHORT).show();
-        });
-
-        buttonInicio.setOnClickListener(v -> startActivity(new Intent(this, HomeActivity.class)));
-
-        buttonPets.setOnClickListener(v -> startActivity(new Intent(this, PetsActivity.class)));
-
-        buttonAgendamentos.setOnClickListener(v -> startActivity(new Intent(this, SchedulingActivity.class)));
-
-        buttonPerfil.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
+        buttonConfirmScheduling = findViewById(R.id.buttonConfirmScheduling);
 
         setupDateTimePickers();
         fetchWorkers();
@@ -111,29 +89,30 @@ public class NewSchedulingActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
 
         editDate.setOnClickListener(v -> {
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int y = calendar.get(Calendar.YEAR);
+            int m = calendar.get(Calendar.MONTH);
+            int d = calendar.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePicker = new DatePickerDialog(this,
-                    (view, y, m, d) -> {
-                        m += 1;
-                        String date = String.format("%04d-%02d-%02d", y, m, d);
-                        editDate.setText(date);
-                    }, year, month, day);
-            datePicker.show();
+            DatePickerDialog dialog = new DatePickerDialog(this,
+                    (view, year, month, day) -> {
+                        month += 1;
+                        editDate.setText(String.format("%04d-%02d-%02d", year, month, day));
+                    },
+                    y, m, d);
+
+            dialog.show();
         });
 
         editTime.setOnClickListener(v -> {
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
+            int h = calendar.get(Calendar.HOUR_OF_DAY);
+            int min = calendar.get(Calendar.MINUTE);
 
-            TimePickerDialog timePicker = new TimePickerDialog(this,
-                    (view, h, m) -> {
-                        String time = String.format("%02d:%02d:00", h, m);
-                        editTime.setText(time);
-                    }, hour, minute, true);
-            timePicker.show();
+            TimePickerDialog dialog = new TimePickerDialog(this,
+                    (view, hour, minute) ->
+                            editTime.setText(String.format("%02d:%02d:00", hour, minute)),
+                    h, min, true);
+
+            dialog.show();
         });
     }
 
@@ -143,32 +122,43 @@ public class NewSchedulingActivity extends AppCompatActivity {
         if (token == null) return;
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, WORKERS_URL, null,
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                WORKERS_URL,
+                null,
                 response -> {
-                    workersList.clear();
-                    workersIdList.clear();
                     try {
+                        workersList.clear();
+                        workersIdList.clear();
+
                         JSONArray content = response.getJSONArray("content");
                         for (int i = 0; i < content.length(); i++) {
                             JSONObject obj = content.getJSONObject(i);
                             workersIdList.add(obj.getString("id"));
                             workersList.add(obj.getString("fullName"));
                         }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, workersList);
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                this, android.R.layout.simple_spinner_item, workersList);
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinnerWorker.setAdapter(adapter);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 },
-                error -> Toast.makeText(this, "Erro ao carregar funcionários.", Toast.LENGTH_SHORT).show()) {
+                error ->
+                        Toast.makeText(this, "Erro ao carregar funcionários.", Toast.LENGTH_SHORT).show()
+        ) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
+                Map<String, String> h = new HashMap<>();
+                h.put("Authorization", "Bearer " + token);
+                return h;
             }
         };
+
         queue.add(request);
     }
 
@@ -178,32 +168,43 @@ public class NewSchedulingActivity extends AppCompatActivity {
         if (token == null) return;
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, PETS_URL, null,
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                PETS_URL,
+                null,
                 response -> {
-                    petsList.clear();
-                    petsIdList.clear();
                     try {
+                        petsList.clear();
+                        petsIdList.clear();
+
                         JSONArray content = response.getJSONArray("content");
                         for (int i = 0; i < content.length(); i++) {
                             JSONObject obj = content.getJSONObject(i);
                             petsIdList.add(obj.getLong("id"));
                             petsList.add(obj.getString("name"));
                         }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, petsList);
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                this, android.R.layout.simple_spinner_item, petsList);
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinnerPet.setAdapter(adapter);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 },
-                error -> Toast.makeText(this, "Erro ao carregar pets.", Toast.LENGTH_SHORT).show()) {
+                error ->
+                        Toast.makeText(this, "Erro ao carregar pets.", Toast.LENGTH_SHORT).show()
+        ) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
+                Map<String, String> h = new HashMap<>();
+                h.put("Authorization", "Bearer " + token);
+                return h;
             }
         };
+
         queue.add(request);
     }
 
@@ -219,9 +220,10 @@ public class NewSchedulingActivity extends AppCompatActivity {
                 SERVICES_URL,
                 null,
                 response -> {
-                    servicesList.clear();
-                    servicesIdList.clear();
                     try {
+                        servicesList.clear();
+                        servicesIdList.clear();
+
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject obj = response.getJSONObject(i);
                             servicesIdList.add(obj.getLong("id"));
@@ -229,23 +231,22 @@ public class NewSchedulingActivity extends AppCompatActivity {
                         }
 
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                                this,
-                                android.R.layout.simple_spinner_item,
-                                servicesList
-                        );
+                                this, android.R.layout.simple_spinner_item, servicesList);
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinnerServiceType.setAdapter(adapter);
+
                     } catch (JSONException e) {
                         Toast.makeText(this, "Erro ao processar serviços.", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(this, "Erro ao carregar serviços.", Toast.LENGTH_SHORT).show()
+                error ->
+                        Toast.makeText(this, "Erro ao carregar serviços.", Toast.LENGTH_SHORT).show()
         ) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
+                Map<String, String> h = new HashMap<>();
+                h.put("Authorization", "Bearer " + token);
+                return h;
             }
         };
 
@@ -255,21 +256,22 @@ public class NewSchedulingActivity extends AppCompatActivity {
     private void handleCreateScheduling() {
         textErrorScheduling.setVisibility(View.GONE);
 
-        int workerIndex = spinnerWorker.getSelectedItemPosition();
-        int petIndex = spinnerPet.getSelectedItemPosition();
-        int serviceIndex = spinnerServiceType.getSelectedItemPosition();
+        int wi = spinnerWorker.getSelectedItemPosition();
+        int pi = spinnerPet.getSelectedItemPosition();
+        int si = spinnerServiceType.getSelectedItemPosition();
+
         String date = editDate.getText().toString().trim();
         String time = editTime.getText().toString().trim();
 
-        if (workerIndex < 0 || petIndex < 0 || serviceIndex < 0 || date.isEmpty() || time.isEmpty()) {
+        if (wi < 0 || pi < 0 || si < 0 || date.isEmpty() || time.isEmpty()) {
             textErrorScheduling.setText("Preencha todos os campos.");
             textErrorScheduling.setVisibility(View.VISIBLE);
             return;
         }
 
-        String workerId = workersIdList.get(workerIndex);
-        Long petId = petsIdList.get(petIndex);
-        Long serviceId = servicesIdList.get(serviceIndex);
+        String workerId = workersIdList.get(wi);
+        long petId = petsIdList.get(pi);
+        long serviceId = servicesIdList.get(si);
         String dateTime = date + "T" + time + "-03:00";
 
         createScheduling(workerId, petId, serviceId, dateTime);
@@ -280,53 +282,47 @@ public class NewSchedulingActivity extends AppCompatActivity {
         String token = prefs.getString("jwt_token", null);
         if (token == null) return;
 
-        textErrorScheduling.setVisibility(View.GONE);
-
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        JSONObject jsonBody = new JSONObject();
+        JSONObject body = new JSONObject();
         try {
-            jsonBody.put("workerId", workerId);
-            jsonBody.put("petId", petId);
-            jsonBody.put("serviceId", serviceId);
-            jsonBody.put("date", date);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            body.put("workerId", workerId);
+            body.put("petId", petId);
+            body.put("serviceId", serviceId);
+            body.put("date", date);
+        } catch (Exception ignored) {}
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
                 SCHEDULING_URL,
-                jsonBody,
+                body,
                 response -> {
-                    Toast.makeText(this, "Agendamento criado com sucesso!", Toast.LENGTH_SHORT).show();
-                    finish(); // opcional
+                    Toast.makeText(this, "Agendamento criado!", Toast.LENGTH_SHORT).show();
+                    finish();
                 },
                 error -> {
-                    String errorMessage = "Erro ao criar agendamento.";
-
+                    String message = "Erro ao criar agendamento.";
                     try {
                         if (error.networkResponse != null && error.networkResponse.data != null) {
-                            String body = new String(error.networkResponse.data, "UTF-8");
-                            JSONObject json = new JSONObject(body);
-                            errorMessage = json.optString("message", errorMessage);
+                            String res = new String(error.networkResponse.data, "UTF-8");
+                            JSONObject obj = new JSONObject(res);
+                            message = obj.optString("message", message);
                         }
                     } catch (Exception ignored) {}
 
-                    textErrorScheduling.setText(errorMessage);
+                    textErrorScheduling.setText(message);
                     textErrorScheduling.setVisibility(View.VISIBLE);
                 }
         ) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                headers.put("Content-Type", "application/json");
-                return headers;
+                Map<String, String> h = new HashMap<>();
+                h.put("Authorization", "Bearer " + token);
+                h.put("Content-Type", "application/json");
+                return h;
             }
         };
 
         queue.add(request);
     }
-
 }

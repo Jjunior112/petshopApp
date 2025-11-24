@@ -11,14 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.littlebirds.petshopapp.R;
@@ -29,9 +24,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends BaseActivity {
 
-    private ImageButton buttonInicio, buttonAgendar, buttonPets, buttonAgendamentos, buttonPerfil;
     private ImageButton buttonEditProfile, buttonDeleteProfile;
     private TextView textFullName, textEmail, textAddress, textCep, textCity;
     private Button buttonLogout;
@@ -45,21 +39,18 @@ public class ProfileActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.profile), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        setupBottomNav(); // <<< herdado do BaseActivity
 
-        // Inicializa elementos da interface
-        buttonInicio = findViewById(R.id.buttonInicio);
-        buttonAgendar = findViewById(R.id.buttonAgendar);
-        buttonPets = findViewById(R.id.buttonPets);
-        buttonAgendamentos = findViewById(R.id.buttonAgendamentos);
-        buttonPerfil = findViewById(R.id.buttonPerfil);
+        initViews();
+        setupRoleVisibility();
+        setupListeners();
+
+        loadUserProfile();
+    }
+
+    private void initViews() {
         buttonEditProfile = findViewById(R.id.buttonEditProfile);
         buttonDeleteProfile = findViewById(R.id.buttonDeleteProfile);
-
         textFullName = findViewById(R.id.textFullName);
         textEmail = findViewById(R.id.textEmail);
         textAddress = findViewById(R.id.textAddress);
@@ -69,53 +60,26 @@ public class ProfileActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
         userRole = prefs.getString("user_role", "CLIENT");
+    }
 
-        // -----------------------------
-        // OCULTAR BOTÕES PARA WORKER
-        // -----------------------------
+    private void setupRoleVisibility() {
+        // Usuário WORKER não pode editar, deletar, nem usar Pets e Agendar
         if (userRole.equalsIgnoreCase("WORKER")) {
-            buttonAgendar.setVisibility(View.GONE);
-            buttonPets.setVisibility(View.GONE);
+            findViewById(R.id.buttonAgendar).setVisibility(View.GONE);
+            findViewById(R.id.buttonPets).setVisibility(View.GONE);
             buttonDeleteProfile.setVisibility(View.GONE);
             buttonEditProfile.setVisibility(View.GONE);
         }
-        // ------------------------------------------------------------------
+    }
 
-        // Navegação inferior
-        buttonPerfil.setOnClickListener(v ->
-                Toast.makeText(this, "Você já está no seu perfil", Toast.LENGTH_SHORT).show()
+    private void setupListeners() {
+        buttonEditProfile.setOnClickListener(v ->
+                startActivity(new Intent(this, EditProfileActivity.class))
         );
 
-        buttonAgendar.setOnClickListener(v ->
-                startActivity(new Intent(ProfileActivity.this, NewSchedulingActivity.class))
-        );
-
-        buttonPets.setOnClickListener(v ->
-                startActivity(new Intent(ProfileActivity.this, PetsActivity.class))
-        );
-
-        buttonAgendamentos.setOnClickListener(v ->
-                startActivity(new Intent(ProfileActivity.this, SchedulingActivity.class))
-        );
-
-        buttonInicio.setOnClickListener(v ->
-                startActivity(new Intent(ProfileActivity.this, HomeActivity.class))
-        );
-
-        // Botão Editar Perfil
-        buttonEditProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
-            startActivity(intent);
-        });
-
-        // Botão Excluir Conta
         buttonDeleteProfile.setOnClickListener(v -> confirmDeleteAccount());
 
-        // Logout
         buttonLogout.setOnClickListener(v -> logoutUser());
-
-        // Carrega dados
-        loadUserProfile();
     }
 
     private void loadUserProfile() {
@@ -125,53 +89,52 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (token == null || userId == null) {
             Toast.makeText(this, "Sessão expirada. Faça login novamente.", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
 
-        StringRequest stringRequest = new StringRequest(
+        StringRequest request = new StringRequest(
                 Request.Method.GET,
                 BASE_URL + userId,
-                response -> {
-                    try {
-                        JSONObject userJson = new JSONObject(response);
-                        String fullName = userJson.getString("fullName");
-                        String email = userJson.getString("email");
-
-                        JSONObject addressJson = userJson.getJSONObject("addressListDto");
-                        String street = addressJson.getString("street");
-                        String number = addressJson.getString("number");
-                        String neighborhood = addressJson.getString("neighborhood");
-                        String city = addressJson.getString("city");
-                        String state = addressJson.getString("state");
-                        String zipCode = addressJson.getString("zipCode");
-
-                        textFullName.setText(fullName);
-                        textEmail.setText("Email: " + email);
-                        textAddress.setText("Endereço: " + street + ", " + number + " - " + neighborhood);
-                        textCep.setText("CEP: " + zipCode);
-                        textCity.setText("Cidade: " + city + " - " + state);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Erro ao processar dados do usuário.", Toast.LENGTH_SHORT).show();
-                    }
-                },
+                response -> handleProfileResponse(response),
                 error -> Toast.makeText(this, "Erro ao carregar perfil.", Toast.LENGTH_SHORT).show()
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
-                String token = prefs.getString("jwt_token", null);
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + token);
                 return headers;
             }
         };
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(stringRequest);
+        Volley.newRequestQueue(this).add(request);
+    }
+
+    private void handleProfileResponse(String response) {
+        try {
+            JSONObject userJson = new JSONObject(response);
+            String fullName = userJson.getString("fullName");
+            String email = userJson.getString("email");
+
+            JSONObject addressJson = userJson.getJSONObject("addressListDto");
+            String street = addressJson.getString("street");
+            String number = addressJson.getString("number");
+            String neighborhood = addressJson.getString("neighborhood");
+            String city = addressJson.getString("city");
+            String state = addressJson.getString("state");
+            String zipCode = addressJson.getString("zipCode");
+
+            textFullName.setText(fullName);
+            textEmail.setText("Email: " + email);
+            textAddress.setText("Endereço: " + street + ", " + number + " - " + neighborhood);
+            textCep.setText("CEP: " + zipCode);
+            textCity.setText("Cidade: " + city + " - " + state);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Erro ao processar dados do usuário.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void confirmDeleteAccount() {
@@ -179,8 +142,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .setTitle("Excluir Conta")
                 .setMessage("Tem certeza que deseja prosseguir para a exclusão da conta?")
                 .setPositiveButton("Continuar", (dialog, which) -> {
-                    Intent intent = new Intent(ProfileActivity.this, InactiveAccountActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(this, InactiveAccountActivity.class));
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();
@@ -193,7 +155,7 @@ public class ProfileActivity extends AppCompatActivity {
         editor.remove("user_id");
         editor.apply();
 
-        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

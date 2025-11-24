@@ -10,7 +10,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,9 +17,9 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.littlebirds.petshopapp.R;
-import com.littlebirds.petshopapp.models.SimpleItemSelectedListener;
 import com.littlebirds.petshopapp.adapters.ClientsAdapter;
 import com.littlebirds.petshopapp.models.ClientDto;
+import com.littlebirds.petshopapp.models.SimpleItemSelectedListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -31,12 +30,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ClientsActivity extends AppCompatActivity {
+public class ClientsActivity extends BaseActivity {
 
     private static final String URL_CLIENTS = "http://10.0.2.2:8080/user?role=CLIENT";
 
     private RecyclerView recyclerClients;
     private ClientsAdapter adapter;
+
     private List<ClientDto> clients = new ArrayList<>();
     private List<ClientDto> filtered = new ArrayList<>();
 
@@ -47,6 +47,9 @@ public class ClientsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clients);
+
+        // Inicializa bottom navigation herdado
+        setupBottomNav();
 
         recyclerClients = findViewById(R.id.recyclerClients);
         recyclerClients.setLayoutManager(new LinearLayoutManager(this));
@@ -122,10 +125,8 @@ public class ClientsActivity extends AppCompatActivity {
 
                 JSONObject obj = array.getJSONObject(i);
 
-                // filtra apenas CLIENT
                 if (!obj.optString("role", "").equalsIgnoreCase("CLIENT")) continue;
 
-                // cria dto
                 ClientDto c = new ClientDto();
                 c.setId(obj.optString("id"));
                 c.setFullName(obj.optString("fullName"));
@@ -133,7 +134,6 @@ public class ClientsActivity extends AppCompatActivity {
                 c.setPhone(obj.optString("phone"));
                 c.setActive(obj.optBoolean("isActive"));
 
-                // tratar endereço (pode ser nulo)
                 JSONObject addr = obj.optJSONObject("addressListDto");
                 if (addr != null) {
                     String fullAddress =
@@ -178,16 +178,16 @@ public class ClientsActivity extends AppCompatActivity {
 
         for (ClientDto c : clients) {
             boolean matchName = c.getFullName().toLowerCase().contains(query);
-            boolean matchStatus = status.equals("Todos")
-                    || (status.equals("Ativo") && c.isActive())
-                    || (status.equals("Inativo") && !c.isActive());
+            boolean matchStatus =
+                    status.equals("Todos")
+                            || (status.equals("Ativo") && c.isActive())
+                            || (status.equals("Inativo") && !c.isActive());
 
             if (matchName && matchStatus) {
                 filtered.add(c);
             }
         }
 
-        // Ordenação simplificada
         if (sort.equals("A-Z")) {
             filtered.sort(Comparator.comparing(ClientDto::getFullName));
         } else {

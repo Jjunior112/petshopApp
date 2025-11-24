@@ -6,11 +6,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.annotation.Nullable;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -25,41 +21,43 @@ import org.json.JSONException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DeletePetActivity  extends AppCompatActivity {
+public class DeletePetActivity extends BaseActivity {
 
     private TextView textName, textRace, textColor, textBorn;
     private Button buttonConfirmDelete;
-    private String PETS_URL = "http://10.0.2.2:8080/pets/";
+
+    private static final String PETS_URL = "http://10.0.2.2:8080/pets/";
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_delete_pet);
+
+        // Ativa o bottom navigation base
+        setupBottomNav();
+
+        textName  = findViewById(R.id.delete_text_name);
+        textRace  = findViewById(R.id.delete_text_race);
+        textColor = findViewById(R.id.delete_text_color);
+        textBorn  = findViewById(R.id.delete_text_born);
+        buttonConfirmDelete = findViewById(R.id.buttonConfirmDelete);
 
         long petId = getIntent().getLongExtra("petId", -1);
 
-        if (petId != -1) {
-            fetchPetById(petId);
-        } else {
+        if (petId == -1) {
             Toast.makeText(this, "ID do pet inválido.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.deletePet), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        textName = findViewById(R.id.delete_text_name);
-        textRace = findViewById(R.id.delete_text_race);
-        textColor = findViewById(R.id.delete_text_color);
-        textBorn = findViewById(R.id.delete_text_born);
-        buttonConfirmDelete = findViewById(R.id.buttonConfirmDelete);
+        fetchPetById(petId);
 
         buttonConfirmDelete.setOnClickListener(v -> deletePet(petId));
-
     }
 
+    // ----------------------------------------------------
+    // DELETE PET
+    // ----------------------------------------------------
     private void deletePet(long petId) {
         SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", null);
@@ -69,7 +67,7 @@ public class DeletePetActivity  extends AppCompatActivity {
             return;
         }
 
-        StringRequest stringRequest = new StringRequest(
+        StringRequest request = new StringRequest(
                 Request.Method.DELETE,
                 PETS_URL + petId,
                 response -> {
@@ -83,19 +81,19 @@ public class DeletePetActivity  extends AppCompatActivity {
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
+                Map<String, String> h = new HashMap<>();
+                h.put("Authorization", "Bearer " + token);
+                return h;
             }
         };
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(stringRequest);
+        Volley.newRequestQueue(this).add(request);
     }
 
-    private void fetchPetById(Long id) {
-        String url = PETS_URL + id;
-
+    // ----------------------------------------------------
+    // GET PET BY ID
+    // ----------------------------------------------------
+    private void fetchPetById(long id) {
         SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
         String token = prefs.getString("jwt_token", null);
 
@@ -104,21 +102,18 @@ public class DeletePetActivity  extends AppCompatActivity {
             return;
         }
 
-        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = PETS_URL + id;
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
                 response -> {
                     try {
-                        String name = response.getString("name");
-                        String race = response.getString("race");
-                        String color = response.optString("color", "Não informado");
-                        String born = response.getString("born");
-
-                        textName.setText(name);
-                        textRace.setText(race);
-                        textColor.setText(color);
-                        textBorn.setText(born);
-
+                        textName.setText(response.getString("name"));
+                        textRace.setText(response.getString("race"));
+                        textColor.setText(response.optString("color", "Não informado"));
+                        textBorn.setText(response.getString("born"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(this, "Erro ao processar dados do pet.", Toast.LENGTH_SHORT).show();
@@ -128,11 +123,12 @@ public class DeletePetActivity  extends AppCompatActivity {
         ) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
+                Map<String, String> h = new HashMap<>();
+                h.put("Authorization", "Bearer " + token);
+                return h;
             }
         };
 
-        queue.add(request);
-    }}
+        Volley.newRequestQueue(this).add(request);
+    }
+}
