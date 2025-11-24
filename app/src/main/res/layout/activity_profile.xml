@@ -6,126 +6,142 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_green"
-    android:padding="24dp"
     tools:context=".activities.ProfileActivity">
 
-
-    <TextView
-        android:id="@+id/textFullName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:text="Nome"
-        android:textColor="#215247"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+    <!-- SCROLL TOTAL DO CONTEÚDO -->
+    <ScrollView
+        android:id="@+id/scrollProfile"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="24dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <TextView
-        android:id="@+id/textEmail"
-        android:layout_width="295dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="48dp"
-        android:text="Email:"
-        android:textColor="#333"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textFullName" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/textAddress"
-        android:layout_width="295dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="24dp"
-        android:text="Endereço:"
-        android:textColor="#333"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textEmail" />
+            <TextView
+                android:id="@+id/textFullName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="248dp"
+                android:text="Nome"
+                android:textColor="#215247"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textCep"
-        android:layout_width="295dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="24dp"
-        android:text="CEP:"
-        android:textColor="#333"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textAddress" />
+            <TextView
+                android:id="@+id/textEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                android:text="Email:"
+                android:textColor="#333"
+                android:textSize="18sp"
+                app:layout_constraintTop_toBottomOf="@id/textFullName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/textCity"
-        android:layout_width="295dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="24dp"
-        android:text="Cidade:"
-        android:textColor="#333"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textCep" />
+            <TextView
+                android:id="@+id/textAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Endereço:"
+                android:textColor="#333"
+                android:textSize="18sp"
+                app:layout_constraintTop_toBottomOf="@id/textEmail"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/layoutButtons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        app:layout_constraintTop_toBottomOf="@id/textCity"
-        app:layout_constraintBottom_toTopOf="@id/buttonLogout">
+            <TextView
+                android:id="@+id/textCep"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="CEP:"
+                android:textColor="#333"
+                android:textSize="18sp"
+                app:layout_constraintTop_toBottomOf="@id/textAddress"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <ImageButton
-            android:id="@+id/buttonEditProfile"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:backgroundTint="#4CAF50"
-            android:contentDescription="Editar perfil"
-            android:padding="8dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_edit" />
+            <TextView
+                android:id="@+id/textCity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Cidade:"
+                android:textColor="#333"
+                android:textSize="18sp"
+                app:layout_constraintTop_toBottomOf="@id/textCep"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-        <ImageButton
-            android:id="@+id/buttonDeleteProfile"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:backgroundTint="#E53935"
-            android:contentDescription="Excluir conta"
-            android:padding="8dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_delete" />
-    </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layoutButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                app:layout_constraintTop_toBottomOf="@id/textCity"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-    <Button
-        android:id="@+id/buttonLogout"
-        android:layout_width="140dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="120dp"
-        android:background="@android:color/transparent"
-        android:text="Logout"
-        android:textColor="#E53935"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textCity" />
+                <ImageButton
+                    android:id="@+id/buttonEditProfile"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:backgroundTint="#4CAF50"
+                    android:padding="8dp"
+                    android:contentDescription="Editar perfil"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_edit" />
 
+                <ImageButton
+                    android:id="@+id/buttonDeleteProfile"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:backgroundTint="#E53935"
+                    android:padding="8dp"
+                    android:contentDescription="Excluir conta"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_delete" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/buttonLogout"
+                android:layout_width="140dp"
+                android:layout_height="44dp"
+                android:layout_marginTop="48dp"
+                android:background="@android:color/transparent"
+                android:text="Logout"
+                android:textColor="#E53935"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/layoutButtons"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- BOTTOM NAV FIXA -->
     <include
         android:id="@+id/bottom_navigation"
         layout="@layout/bottom_navigation"
