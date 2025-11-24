@@ -135,7 +135,7 @@ public class HomeActivity extends AppCompatActivity {
         );
 
         buttonList.setOnClickListener(v ->
-                startActivity(new Intent(this, ProfileActivity.class))
+                startActivity(new Intent(this, ListAdminActivity.class))
         );
         buttonAdd.setOnClickListener(v ->
                 startActivity(new Intent(this, ProfileActivity.class))

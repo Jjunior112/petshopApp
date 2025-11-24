@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="@drawable/bg_green"
+    tools:context=".activities.ListAdminActivity">
+
+    <Button
+        android:id="@+id/btnClients"
+        android:layout_width="313dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="248dp"
+        android:backgroundTint="#5ac0af"
+        android:text="Clientes"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnServices"
+        android:layout_width="313dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="#5ac0af"
+        android:text="Serviços"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnSchedulings" />
+
+    <Button
+        android:id="@+id/btnPromotions"
+        android:layout_width="313dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#5ac0af"
+        android:text="Promoções"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnServices" />
+
+    <Button
+        android:id="@+id/btnSchedulings"
+        android:layout_width="313dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="#5ac0af"
+        android:text="Agendamentos"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnEmployees" />
+
+    <Button
+        android:id="@+id/btnEmployees"
+        android:layout_width="313dp"
+        android:layout_height="59dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="#5ac0af"
+        android:text="Funcionários"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnClients" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
