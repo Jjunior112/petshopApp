@@ -1,4 +1,4 @@
-package com.littlebirds.petshopapp;
+package com.littlebirds.petshopapp.activities;
 
 
 import android.content.Intent;
@@ -23,6 +23,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.littlebirds.petshopapp.R;
+import com.littlebirds.petshopapp.adapters.ServicesAdapter;
+import com.littlebirds.petshopapp.models.Service;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private ImageButton buttonInicio, buttonAgendar, buttonPets, buttonAgendamentos, buttonPerfil,buttonAdd,buttonList;
 
-    private Button button;
+    private Button button,button1;
     private String userRole = "CLIENT";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,7 @@ public class HomeActivity extends AppCompatActivity {
         buttonList = findViewById(R.id.buttonList);
         buttonAdd = findViewById(R.id.buttonAdd);
         button = findViewById(R.id.button);
+        button1 = findViewById(R.id.button1);
         title = findViewById(R.id.textView9);
         recyclerServices = findViewById(R.id.recyclerServices);
         recyclerServices.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -79,6 +83,8 @@ public class HomeActivity extends AppCompatActivity {
             buttonAgendar.setVisibility(View.GONE);
             buttonPets.setVisibility(View.GONE);
             button.setVisibility(View.GONE);
+            button1.setVisibility(View.VISIBLE);
+
             title.setText("Bem vindo!");
         }
 
@@ -88,13 +94,15 @@ public class HomeActivity extends AppCompatActivity {
         if (userRole.equalsIgnoreCase("ADMIN")) {
             buttonAgendar.setVisibility(View.GONE);
             buttonPets.setVisibility(View.GONE);
-            button.setVisibility(View.GONE);
             buttonAgendamentos.setVisibility(View.GONE);
             buttonPerfil.setVisibility(View.GONE);
             buttonAdd.setVisibility(View.VISIBLE);
             buttonList.setVisibility(View.VISIBLE);
+            button.setVisibility(View.GONE);
+            button1.setVisibility(View.VISIBLE);
 
             title.setText("Bem vindo!");
+
         }
 
         // AÇÕES DOS BOTÕES
@@ -104,6 +112,10 @@ public class HomeActivity extends AppCompatActivity {
 
         button.setOnClickListener(v ->
                 startActivity(new Intent(this, NewSchedulingActivity.class))
+        );
+
+        button1.setOnClickListener(v ->
+                startActivity(new Intent(this, SchedulingActivity.class))
         );
 
         buttonAgendar.setOnClickListener(v ->
@@ -119,6 +131,13 @@ public class HomeActivity extends AppCompatActivity {
         );
 
         buttonPerfil.setOnClickListener(v ->
+                startActivity(new Intent(this, ProfileActivity.class))
+        );
+
+        buttonList.setOnClickListener(v ->
+                startActivity(new Intent(this, ProfileActivity.class))
+        );
+        buttonAdd.setOnClickListener(v ->
                 startActivity(new Intent(this, ProfileActivity.class))
         );
 

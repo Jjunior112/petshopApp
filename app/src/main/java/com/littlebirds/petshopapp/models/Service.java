@@ -1,4 +1,4 @@
-package com.littlebirds.petshopapp;
+package com.littlebirds.petshopapp.models;
 
 public class Service {
     private Long id;

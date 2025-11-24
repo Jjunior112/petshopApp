@@ -1,4 +1,4 @@
-package com.littlebirds.petshopapp;
+package com.littlebirds.petshopapp.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.littlebirds.petshopapp.R;
+import com.littlebirds.petshopapp.models.Service;
 
 import java.util.List;
 public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.ServiceViewHolder> {

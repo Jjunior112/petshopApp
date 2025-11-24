@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_green"
     android:id="@+id/home"
-    tools:context=".HomeActivity">
+    tools:context=".activities.HomeActivity">
 
 
     <TextView
@@ -43,6 +43,19 @@
         android:layout_marginTop="476dp"
         android:backgroundTint="#5ac0af"
         android:text="Agendar serviço agora"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.459"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="224dp"
+        android:layout_height="61dp"
+        android:layout_marginTop="476dp"
+        android:backgroundTint="#5ac0af"
+        android:text="Ver Agendamentos"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.459"
         app:layout_constraintStart_toStartOf="parent"

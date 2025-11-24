@@ -1,4 +1,4 @@
-package com.littlebirds.petshopapp;
+package com.littlebirds.petshopapp.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +22,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.littlebirds.petshopapp.adapters.PetsAdapter;
+import com.littlebirds.petshopapp.R;
+import com.littlebirds.petshopapp.models.Pet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
