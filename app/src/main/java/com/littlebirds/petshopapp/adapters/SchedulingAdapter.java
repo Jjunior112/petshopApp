@@ -111,7 +111,7 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
                 holder.buttonDeleteScheduling.setVisibility(View.GONE);
             }
         }
-        else if (userRole.equalsIgnoreCase("WORKER")) {
+        else if (userRole.equalsIgnoreCase("WORKER") ) {
             // Exibe apenas se NÃO estiver cancelado e NÃO estiver concluído
             if (!status.equalsIgnoreCase("CANCELED") &&
                     !status.equalsIgnoreCase("COMPLETED")) {
@@ -123,9 +123,17 @@ public class SchedulingAdapter extends RecyclerView.Adapter<SchedulingAdapter.Sc
             }
         }
         else if (userRole.equalsIgnoreCase("ADMIN")) {
-            holder.buttonEndScheduling.setVisibility(View.VISIBLE);
-            holder.buttonEditScheduling.setVisibility(View.VISIBLE);
-            holder.buttonDeleteScheduling.setVisibility(View.VISIBLE);
+            if (!status.equalsIgnoreCase("CANCELED") &&
+                    !status.equalsIgnoreCase("COMPLETED")) {
+                holder.buttonEndScheduling.setVisibility(View.VISIBLE);
+                holder.buttonEditScheduling.setVisibility(View.VISIBLE);
+                holder.buttonDeleteScheduling.setVisibility(View.VISIBLE);
+            }
+            else{
+                holder.buttonEndScheduling.setVisibility(View.GONE);
+                holder.buttonEditScheduling.setVisibility(View.GONE);
+                holder.buttonDeleteScheduling.setVisibility(View.GONE);
+            }
         }
 
         // ---------------------------------------------------------
