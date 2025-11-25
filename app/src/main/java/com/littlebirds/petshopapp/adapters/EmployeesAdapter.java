@@ -13,16 +13,16 @@ import com.littlebirds.petshopapp.models.ClientDto;
 
 import java.util.List;
 
-public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ViewHolder> {
+public class EmployeesAdapter extends RecyclerView.Adapter<EmployeesAdapter.ViewHolder> {
 
-    private List<ClientDto> clients;
+    private List<ClientDto> employees;
 
-    public ClientsAdapter(List<ClientDto> clients) {
-        this.clients = clients;
+    public EmployeesAdapter(List<ClientDto> employees) {
+        this.employees = employees;
     }
 
     public void updateList(List<ClientDto> newList) {
-        this.clients = newList;
+        this.employees = newList;
         notifyDataSetChanged();
     }
 
@@ -30,22 +30,22 @@ public class ClientsAdapter extends RecyclerView.Adapter<ClientsAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_user, parent, false);
+                .inflate(R.layout.item_user, parent, false); // Reutiliza o mesmo layout
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ClientDto c = clients.get(position);
+        ClientDto e = employees.get(position);
 
-        holder.txtName.setText(c.getFullName());
-        holder.txtEmail.setText(c.getEmail());
-        holder.txtStatus.setText(c.isActive() ? "Ativo" : "Inativo");
+        holder.txtName.setText(e.getFullName());
+        holder.txtEmail.setText(e.getEmail());
+        holder.txtStatus.setText(e.isActive() ? "Ativo" : "Inativo");
     }
 
     @Override
     public int getItemCount() {
-        return clients.size();
+        return employees.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

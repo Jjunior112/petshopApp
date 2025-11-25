@@ -29,13 +29,13 @@ public class ListAdminActivity extends BaseActivity {
                 startActivity(new Intent(this, ClientsActivity.class))
         );
 
-        //btnEmployees.setOnClickListener(v ->
-        //        startActivity(new Intent(this, EmployeesActivity.class))
-        //);
+        btnEmployees.setOnClickListener(v ->
+                startActivity(new Intent(this, EmployeesActivity.class))
+        );
 
-        //btnSchedulings.setOnClickListener(v ->
-        //        startActivity(new Intent(this, SchedulingsActivity.class))
-        //);
+        btnSchedulings.setOnClickListener(v ->
+                startActivity(new Intent(this, SchedulingActivity.class))
+        );
 
         //btnServices.setOnClickListener(v ->
         //        startActivity(new Intent(this, ServicesActivity.class))

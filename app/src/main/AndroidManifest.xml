@@ -39,6 +39,7 @@
         <activity android:name=".activities.DeleteSchedulingActivity" />
         <activity android:name=".activities.EndSchedulingActivity" />
         <activity android:name=".activities.ListAdminActivity" />
+        <activity android:name=".activities.EmployeesActivity" />
         <activity android:name=".activities.ClientsActivity" />
 
     </application>
