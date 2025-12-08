@@ -65,7 +65,7 @@ public class SchedulingActivity extends BaseActivity {
         userRole = prefs.getString("user_role", "CLIENT");
 
         // Esconder botão de novo agendamento para WORKER
-        if (userRole.equalsIgnoreCase("WORKER")) {
+        if (userRole.equalsIgnoreCase("WORKER")||userRole.equalsIgnoreCase("ADMIN")) {
             buttonNewScheduling.setVisibility(View.GONE);
         }
 
